@@ -15,6 +15,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import br.leg.rr.al.core.domain.StatusType;
+import br.leg.rr.al.seguranca.core.jpa.SistemaEntityStatus;
 import br.leg.rr.al.seguranca.domain.SegurancaValidationMessages;
 
 /**

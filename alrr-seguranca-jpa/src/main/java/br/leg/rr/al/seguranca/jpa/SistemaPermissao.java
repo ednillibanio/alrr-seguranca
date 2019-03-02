@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import br.leg.rr.al.seguranca.core.jpa.SistemaEntityStatus;
+
 /**
  * 
  * @author ednil
@@ -31,7 +33,7 @@ public class SistemaPermissao extends SistemaEntityStatus<Integer> {
 	private static final long serialVersionUID = 4095665896993479832L;
 
 	/**
-	 * valor = "objeto:operacao" -> haspermisison('contato:incluir');
+	 * valor = "sistemaObjeto:sistemaOperacao" -> haspermisison('contato:incluir');
 	 */
 	@NotNull
 	@Column(length = 100, nullable = false)
@@ -39,11 +41,11 @@ public class SistemaPermissao extends SistemaEntityStatus<Integer> {
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "objeto_id", foreignKey = @ForeignKey(name = "objeto_fk"), nullable = false)
-	private Objeto objeto;
+	private SistemaObjeto sistemaObjeto;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "operacao_id", foreignKey = @ForeignKey(name = "operacao_fk"), nullable = false)
-	private Operacao operacao;
+	private SistemaOperacao sistemaOperacao;
 
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<SistemaPermissaoUrl> sistemaPermissaoUrl;
@@ -56,20 +58,20 @@ public class SistemaPermissao extends SistemaEntityStatus<Integer> {
 		this.valor = valor;
 	}
 
-	public Operacao getOperacao() {
-		return operacao;
+	public SistemaOperacao getOperacao() {
+		return sistemaOperacao;
 	}
 
-	public void setOperacao(Operacao operacao) {
-		this.operacao = operacao;
+	public void setOperacao(SistemaOperacao sistemaOperacao) {
+		this.sistemaOperacao = sistemaOperacao;
 	}
 
-	public Objeto getObjeto() {
-		return objeto;
+	public SistemaObjeto getObjeto() {
+		return sistemaObjeto;
 	}
 
-	public void setObjeto(Objeto objeto) {
-		this.objeto = objeto;
+	public void setObjeto(SistemaObjeto sistemaObjeto) {
+		this.sistemaObjeto = sistemaObjeto;
 	}
 
 }

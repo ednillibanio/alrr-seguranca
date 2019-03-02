@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import br.leg.rr.al.core.jpa.BaseEntity;
 import br.leg.rr.al.pessoa.jpa.PessoaFisica;
+import br.leg.rr.al.seguranca.core.jpa.Sistema;
 import br.leg.rr.al.seguranca.domain.UsuarioType;
 import br.leg.rr.al.seguranca.domain.UsuarioTypeConverter;
 import br.leg.rr.al.servidor.jpa.ServidorPublico;

@@ -88,5 +88,10 @@
 			</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>br.leg.rr.al.seguranca</groupId>
+			<artifactId>alrr-seguranca-utils</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

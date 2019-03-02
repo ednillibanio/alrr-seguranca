@@ -8,9 +8,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import br.leg.rr.al.seguranca.core.jpa.SistemaDominio;
+
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "uq_nome", columnNames = { "sistema_id", "nome" }))
-public class Operacao extends SistemaDominio {
+public class SistemaOperacao extends SistemaDominio {
 
 	/**
 	 * 
@@ -20,7 +22,7 @@ public class Operacao extends SistemaDominio {
 	@Column(length = 250, nullable = true)
 	private String url;
 
-	@OneToMany(mappedBy = "operacao")
+	@OneToMany(mappedBy = "sistemaOperacao")
 	private Set<SistemaPermissao> permissoes;
 
 	public String getUrl() {

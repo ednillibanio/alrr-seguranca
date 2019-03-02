@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.domain.StatusTypeConverter;
 import br.leg.rr.al.core.jpa.BaseEntityStatus;
+import br.leg.rr.al.seguranca.core.jpa.Sistema;
 import br.leg.rr.al.seguranca.domain.SegurancaValidationMessages;
 
 @Entity

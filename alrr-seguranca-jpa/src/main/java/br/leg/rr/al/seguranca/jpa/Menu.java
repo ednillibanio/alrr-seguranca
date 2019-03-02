@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import br.leg.rr.al.core.jpa.Dominio;
+import br.leg.rr.al.seguranca.core.jpa.Sistema;
 
 /**
  * @author Ednil Libanio da Costa Junior

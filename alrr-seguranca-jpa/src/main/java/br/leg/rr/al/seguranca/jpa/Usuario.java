@@ -27,6 +27,7 @@ import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.domain.StatusTypeConverter;
 import br.leg.rr.al.core.jpa.BaseEntityStatus;
 import br.leg.rr.al.core.utils.DataUtils;
+import br.leg.rr.al.seguranca.core.jpa.Sistema;
 import br.leg.rr.al.seguranca.domain.SegurancaValidationMessages;
 import br.leg.rr.al.seguranca.jpa.usuario.constraints.SenhaConstraint;
 import br.leg.rr.al.seguranca.jpa.usuario.constraints.SenhaConstraintGroup;

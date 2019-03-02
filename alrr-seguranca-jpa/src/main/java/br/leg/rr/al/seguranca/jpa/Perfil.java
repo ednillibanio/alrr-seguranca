@@ -26,8 +26,8 @@ public class Perfil extends DominioIndexado {
 	private UsuarioType tipoUsuario;
 
 	@NotNull(message = "Grupo do Perfil: preenchimento obrigatório")
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "grupo_perfil_id", nullable = false, foreignKey = @ForeignKey(name = "grupo_perfil_fk"))
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@JoinColumn(name = "grupo_perfil_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "grupo_perfil_fk"))
 	private GrupoPerfil grupoPerfil;
 
 	public GrupoPerfil getGrupoPerfil() {
