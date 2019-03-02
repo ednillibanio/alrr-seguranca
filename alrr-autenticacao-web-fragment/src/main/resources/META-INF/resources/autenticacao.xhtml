@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:shiro="http://shiro.apache.org/tags"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/single-page.xhtml">
+	<ui:define name="content">
+		<shiro:notAuthenticated>
+			<o:form id="frm-autenticacao">
+				<p:growl id="msgs" />
+				<p:tooltip />
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-md-5 ui-lg-4 nopad" />
+					<div class="ui-md-4 ui-lg-4 nopad">
+						<div class="ui-g">
+							<div class="ui-md-2 ui-lg-2 nopad" />
+							<div class="ui-md-8 ui-lg-8 nopad"
+								style="background-color: white;">
+								<div class="ui-g"
+									style="display: flex; justify-content: center;">
+									<h3>Bem Vindo</h3>
+								</div>
+								<div class="ui-g"
+									style="display: flex; justify-content: center;">
+									<img src="img/autenticacao.png" height="40%"
+										width="40%" />
+								</div>
+								<div class="ui-g">
+									<div class="ui-lg-12">
+										<div class="ui-inputgroup">
+											<span class="ui-inputgroup-addon"><i
+												class="fa fa-user"></i></span>
+											<p:inputText id="usuario" placeholder="Usuário"
+												value="#{autenticacaoController.login}" required="true" />
+											<p:message for="usuario" display="tooltip" />
+										</div>
+									</div>
+
+									<div class="ui-lg-12">
+										<div class="ui-inputgroup">
+											<span class="ui-inputgroup-addon"><i
+												class="fa fa-lock"></i></span>
+											<p:password id="senha" placeholder="Senha"
+												value="#{autenticacaoController.senha}" required="true" />
+											<p:message for="senha" display="tooltip" />
+										</div>
+									</div>
+									<div class="ui-lg-12" style="text-align: right;">
+										<p:link>Esqueceu a senha?</p:link>
+									</div>
+									<div class="ui-lg-12">
+										<p:commandButton value="Autenticar" styleClass="btn-lg"
+											icon="fa fa-unlock-alt"
+											action="#{autenticacaoController.autenticar()}"
+											validateClient="true" update="@form msgs" />
+									</div>
+								</div>
+							</div>
+							<div class="ui-md-2 ui-lg-2 nopad" />
+						</div>
+					</div>
+					<div class="ui-md-4 ui-lg-4 nopad" />
+				</div>
+			</o:form>
+		</shiro:notAuthenticated>
+	</ui:define>
+</ui:composition>
+</html>
