@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+
+
+	<!-- RESULTADO DA PESQUISA -->
+	<p:dataTable id="result" value="#{usuarioController.dataModel}"
+		var="usuario" paginator="true" rows="15"
+		selection="#{usuarioController.entity}" rowsPerPageTemplate="9,15,30"
+		selectionMode="single" emptyMessage="Nenhum registro encontrado"
+		reflow="true" draggableColumns="true" paginatorPosition="top"
+		paginatorAlwaysVisible="true">
+
+
+		<p:ajax event="contextMenu" update="result" />
+
+		<!-- CAMPO: LOGIN -->
+		<p:column id="login" headerText="Login" width="15%">
+			<h:outputText value="#{usuario.login}" />
+		</p:column>
+
+
+		<!-- CAMPO: NOME -->
+		<p:column id="nome" headerText="Nome" width="25%">
+			<h:outputText value="#{usuario.pessoa.nome}"
+				rendered="#{usuario.tipoUsuario ne 'SISTEMA'}" />
+		</p:column>
+
+		<!-- CAMPO: TIPO -->
+		<p:column id="tipo" headerText="Tipo de Usuário" width="15%">
+			<h:outputText value="#{usuario.tipoUsuario.label}" />
+		</p:column>
+
+
+		<!-- CAMPO: SITUACAO -->
+		<p:column id="sit" headerText="Situação" width="10%">
+			<h:outputText value="#{usuario.situacao.label}" />
+		</p:column>
+
+		<!-- CAMPO: SISTEMA -->
+		<p:column id="sistema" headerText="Sistemas" width="35%">
+			<ui:repeat var="sist" value="#{usuario.sistemas}">
+				<h:outputText value="#{sist.nome} (#{sist.situacao})" />;
+				<br />
+			</ui:repeat>
+		</p:column>
+
+
+	</p:dataTable>
+
+	<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+	<p:contextMenu for="result">
+
+		<!-- ********* BOTAO DETALHES ********* -->
+		<!-- <p:menuitem value="Detalhes"
+				actionListener="#{usuarioController.detalhes()}"
+				update=":frmFeriadoDetalhes :frmFeriadoDetalhes:pnl-detalhes">
+			</p:menuitem> -->
+
+
+		<!-- B O T Ã O: EDITAR USUARIO -->
+		<p:menuitem value="Editar" update="frm-pg-usuarios"
+			action="#{usuarioController.editar()}" process="@this">
+		</p:menuitem>
+
+		<!-- B O T Ã O: ADICIONAR SISTEMA/PERFIL DE ACESSO -->
+		<p:menuitem value="Perfis de acesso" update="frm-usuario-sistemas"
+			action="#{usuarioSistemaController.showDialogUsuarioSistema()}"
+			process="@this"
+			title="Define quais perfis de acesso estão vinculados ao usuário. Pode-se incluir, habilitar/desabilitar o acesso ao sistema.">
+		</p:menuitem>
+
+	</p:contextMenu>
+
+
+</ui:composition>

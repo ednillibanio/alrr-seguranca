@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+	<!-- RESULTADO DA PESQUISA -->
+	<p:dataTable id="result"
+		value="#{sistemaPermissaoController.dataModel}" var="permissao"
+		paginator="true" rows="15"
+		selection="#{sistemaPermissaoController.entity}"
+		rowsPerPageTemplate="9,15,30" selectionMode="single"
+		emptyMessage="Nenhum registro encontrado" reflow="true"
+		draggableColumns="false" paginatorPosition="top"
+		paginatorAlwaysVisible="true" expandableRowGroups="true"
+		sortBy="#{permissao.objeto.modulo.nome}">
+
+
+		<p:ajax event="contextMenu" update="result" />
+
+		<f:facet name="header">
+			<h:outputLabel value="Resultado" />
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="excel.png" width="24" />
+				<p:dataExporter type="xls" target="result" fileName="feriados" />
+			</p:commandLink>
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="pdf.png" width="24" />
+				<p:dataExporter type="pdf" target="result" fileName="feriados" />
+			</p:commandLink>
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="csv.png" width="24" />
+				<p:dataExporter type="csv" target="result" fileName="feriados" />
+			</p:commandLink>
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="xml.png" width="24" />
+				<p:dataExporter type="xml" target="result" fileName="feriados" />
+			</p:commandLink>
+		</f:facet>
+
+		<!--HEADER:  MODULO -->
+		<p:headerRow>
+			<p:column id="modulo" colspan="3">
+				<h:outputText value="#{permissao.objeto.modulo.nome}" />
+			</p:column>
+		</p:headerRow>
+
+		<!-- COLUNA: OBJETO -->
+		<p:column id="nome" groupRow="true" headerText="Objeto">
+			<h:outputText value="#{permissao.objeto.nome}" />
+		</p:column>
+
+		<!-- PERMISSAO -->
+		<p:column id="op" headerText="Operação">
+			<h:outputText value="#{permissao.operacao.nome}" />
+		</p:column>
+
+
+		<!-- COLUNA: VALOR -->
+		<p:column id="valor" headerText="Valor">
+			<h:outputText value="#{permissao.valor}" />
+		</p:column>
+
+	</p:dataTable>
+
+	<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+	<p:contextMenu for="result">
+
+		<!--  B O T Ã O:  DETALHES ********* -->
+		<!-- <p:menuitem value="Detalhes"
+				actionListener="#{sistemaController.detalhes()}"
+				update=":frmFeriadoDetalhes :frmFeriadoDetalhes:pnl-detalhes">
+			</p:menuitem> -->
+
+
+		<!--  B O T Ã O:  B O  T Ã O  E D I T A R  -->
+		<p:menuitem value="Editar" update="frm-permissao" icon="fa fa-pencil"
+			action="#{sistemaPermissaoController.editar()}" process="@this">
+		</p:menuitem>
+
+		<!--  B O T Ã O:  R E N O V A R  -->
+		<p:menuitem value="Renovar"
+			update="result frm-pg-permissoes @(.teste)" icon="fa fa-refresh"
+			action="#{sistemaPermissaoController.renovarRegistroDataModel()}"
+			process="@this">
+		</p:menuitem>
+
+	</p:contextMenu>
+
+
+</ui:composition>

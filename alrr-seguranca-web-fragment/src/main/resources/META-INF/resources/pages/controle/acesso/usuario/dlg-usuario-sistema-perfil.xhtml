@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-usuario-sistema-perfil"
+	widgetVar="dlg-usuario-sistema-perfil" showEffect="clip"
+	hideEffect="clip" closeOnEscape="true" showHeader="false"
+	responsive="true" modal="true" resizable="false" closable="false"
+	appendTo="@(body)" styleClass="nopad ui-responsive ui-fluid"
+	fitViewport="true">
+
+
+	<o:form id="frm-usuario-sistema-perfil">
+		<p:growl id="msgs-usuario-sistema-perfil" />
+		<p:tooltip />
+		<p:panel header="Adicionar perfil de acesso do sistema ao usuário">
+
+			<div class="ui-g ui-responsive">
+
+				<!--  -->
+				<p:outputLabel for="perfil" value="Perfil de usuário"
+					title="Selecione o perfil de usuário que fará parte do sistema selecionado." />
+				<p:autoComplete id="perfil"
+					value="#{usuarioSistemaController.sistemaPerfilSelecionado}"
+					completeMethod="#{usuarioSistemaController.completeSistemaPerfis}"
+					groupBy="#{usuarioSistemaController.getPerfilAgrupadoPorGrupo(sistemaPerfil)}"
+					dropdown="true" dropdownMode="multiple"
+					converter="#{entityConverter}" var="sistemaPerfil"
+					emptyMessage="Nenhum registro encontrado"
+					itemValue="#{sistemaPerfil}"
+					itemLabel="#{sistemaPerfil.perfil.nome}" required="true">
+					<p:ajax event="itemSelect" process="@this" />
+					<p:ajax event="itemUnselect" process="@this" />
+				</p:autoComplete>
+				<p:message for="perfil" id="msg-perfil" display="tooltip" />
+
+			</div>
+
+			<!-- BOTOES -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-6 ui-lg6">
+					<!-- FECHAR -->
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" title="Fechar" styleClass="btn-lg"
+						oncomplete="PF('dlg-usuario-sistema-perfil').hide()"
+						process="@this" />
+				</div>
+				<div class="ui-g-12 ui-md-6 ui-lg6">
+					<p:commandButton id="btn-add" value="Salvar"
+						icon="fa fa-fw fa-floppy-o" styleClass="btn-lg"
+						action="#{usuarioSistemaController.adicionarSistemaPerfilAoUsuario}"
+						validateClient="true"
+						update="frm-usuario-sistema-perfil frm-usuario-sistema :frm-usuario-sistemas:result-sistema-perfis"
+						process="frm-usuario-sistema-perfil"
+						onsuccess="PF('dlg-usuario-sistema-perfil').hide()" />
+				</div>
+			</div>
+		</p:panel>
+	</o:form>
+
+</p:dialog>
+</html>

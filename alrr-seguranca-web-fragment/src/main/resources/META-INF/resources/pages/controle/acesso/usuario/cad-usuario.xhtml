@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/default.xhtml">
+
+	<ui:define name="content">
+		<div class="ui-g ui-responsive">
+			<div class="ui-md-2 ui-lg-1" />
+			<div class="ui-g-12 ui-md-8 ui-lg-10">
+				<h1 class="view-titulo">
+					<strong>Cadastro de Usuário</strong>
+				</h1>
+				<p:separator styleClass="view-titulo-sep" />
+				<div class="ui-g nopad" style="float: right">
+					<p:outputLabel id="info" styleClass="fa fa-info-circle fa-lg fa-4x"
+						style="font-size:48px;"
+						title="Esta funcionalidade é responsável por manter as permissões de acesso a um sistema. Um Objeto pode ter várias permissões. Por exemplo, o objeto Perfil do sistema Controle de Acesso tem permissões de incluir, editar e consultar." />
+				</div>
+
+				<o:form id="frm-usuario">
+
+					<p:blockUI widgetVar="block-view" trigger="btn-salvar"
+						block="frm-usuario">
+					</p:blockUI>
+					<p:tooltip />
+					<p:growl id="msgs" />
+
+
+					<p:wizard flowListener="#{usuarioController.onFlowProcess}"
+						widgetVar="wiz" showNavBar="false">
+
+						<!-- TAB: TIPO USUÁRIO -->
+						<p:tab id="tab-tipo-usuario" title="Tipo do Usuário">
+							<p:panel header="Selecione o Tipo do Usuário" styleClass="nopad">
+								<ui:include
+									src="/pages/controle/acesso/usuario/componentes/pnl-usuario-tipo.xhtml" />
+							</p:panel>
+							<p:button value="Fechar" id="btn-fechar" style="float:left"
+								icon="fa fa-fw fa-times" title="Fechar" outcome="fechar" />
+							<p:commandButton onclick="PF('wiz').next();" value="Próximo"
+								style="float:right" icon="fa fa-angle-double-right" />
+						</p:tab>
+
+						<!--  TAB: DADOS USUÁRIO -->
+						<p:tab id="tab-dados-usuario" title="Usuário"
+							rendered="#{usuarioController.entity.tipoUsuario ne 'SISTEMA'}">
+							<p:panel header="Dados do Usuário" styleClass="nopad"
+								rendered="#{usuarioController.entity.tipoUsuario eq 'EXTERNO'}">
+								<ui:include
+									src="/pages/controle/acesso/usuario/componentes/pnl-usuario-externo-dados-pessoais.xhtml" />
+
+							</p:panel>
+							<p:panel header="Dados do Usuário" styleClass="nopad"
+								rendered="#{usuarioController.entity.tipoUsuario ne 'EXTERNO'}">
+								<ui:include
+									src="/pages/controle/acesso/usuario/componentes/pnl-usuario-servidor-dados-pessoais.xhtml" />
+
+							</p:panel>
+							<p:commandButton onclick="PF('wiz').back();" value="Voltar"
+								style="float:left" icon="fa fa-angle-double-left" />
+							<p:commandButton onclick="PF('wiz').next();" value="Próximo"
+								update="msgs" style="float:right"
+								icon="fa fa-angle-double-right" />
+						</p:tab>
+
+
+						<!--  TAB: CONFIRMAÇÃO -->
+						<p:tab id="tab-confirmacao" title="Confirmação">
+							<p:panel header="Configurações de Acesso" styleClass="nopad">
+								<ui:include
+									src="/pages/controle/acesso/usuario/componentes/pnl-usuario-confirmacao.xhtml" />
+
+							</p:panel>
+							<p:commandButton onclick="PF('wiz').back();" value="Voltar"
+								style="float:left" icon="fa fa-angle-double-left" />
+							<p:commandButton id="btn-salvar" value="Confirmar"
+								update="msgs @form" style="float:right" icon="fa fa-floppy-o"
+								action="#{usuarioController.salvar}" />
+						</p:tab>
+
+					</p:wizard>
+
+
+				</o:form>
+			</div>
+			<div class="ui-md-2 ui-lg-1" />
+		</div>
+
+		<!-- DIALOGS -->
+		<ui:include src="/pages/commons/dlg-capturar-imagem.xhtml" />
+		<ui:include src="/pages/commons/dlg-escolher-imagem.xhtml" />
+		<ui:include
+			src="/pages/controle/acesso/dlg-perfil-permissoes-detalhes.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>
+

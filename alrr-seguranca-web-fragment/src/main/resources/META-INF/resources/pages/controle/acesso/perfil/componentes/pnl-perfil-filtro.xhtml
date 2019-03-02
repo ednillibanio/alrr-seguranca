@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<!-- FILTRO DE PESQUISA -->
+	<p:panel header="Filtros" toggleable="true" styleClass="ui-fluid">
+
+		<o:validateOneOrMore id="validar"
+			components="tipos-usuario grupos-perfil nome situacao"
+			message="Informe pelo menos um filtro." />
+
+		<div class="ui-g">
+
+			<!--   F I L T R O:  T I P O S   D O   U S U A R I O   -->
+			<div class="ui-g-12 ui-md-4 ui-lg-2">
+				<p:outputLabel value="Tipos do Usuário" title="Tipos do Usuário"
+					for="tipos-usuario" />
+			</div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4">
+				<p:selectCheckboxMenu id="tipos-usuario" layout="responsive"
+					value="#{perfilController.tiposDoUsuarioSelecionados}"
+					converter="omnifaces.GenericEnumConverter" multiple="true"
+					title="Selecione os tipos do usuário que deseja pesquisar">
+					<f:selectItems value="#{perfilController.tiposDoUsuario}"
+						var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.label}"
+						itemDescription="#{tipo.descricao}" />
+				</p:selectCheckboxMenu>
+			</div>
+
+			<!--  F I L T R O:  G R U P O   DO   P E R F I L   -->
+			<div class="ui-g-12 ui-md-4 ui-lg-2">
+				<p:outputLabel value="Grupos de Perfil" title="Grupos de Perfil."
+					for="grupos-perfil" />
+			</div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4">
+				<p:selectCheckboxMenu id="grupos-perfil"
+					value="#{perfilController.gruposSelecionados}" dropdown="true"
+					converter="#{entityConverter}" multiple="true"
+					title="Selecione os grupos de perfil.">
+					<f:selectItems value="#{perfilController.grupos}" var="grupo"
+						itemValue="#{grupo}" itemLabel="#{grupo.nome}" />
+				</p:selectCheckboxMenu>
+			</div>
+		</div>
+
+		<div class="ui-g">
+
+			<!--   F I L T R O:   N O M E   D O   P E R F I L    -->
+			<div class="ui-g-12 ui-md-4 ui-lg-2">
+				<p:outputLabel value="Nome do Perfil" title="Nome do perfil"
+					for="nome" />
+			</div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4">
+				<p:inputText id="nome" label="Nome" value="#{perfilController.nome}"
+					title="Informe o nome do perfil que deseja pesquisar.">
+					<p:ajax resetValues="true" />
+				</p:inputText>
+			</div>
+
+			<!--   F I L T R O:   S I T U A C A O   D O   P E R  F I L   -->
+			<div class="ui-g-12 ui-md-4 ui-lg-2">
+				<p:outputLabel value="Situação" title="Situação" for="situacao" />
+			</div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4">
+				<p:selectOneButton id="situacao"
+					value="#{perfilController.situacao}">
+					<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+						itemValue="#{sit}" itemLabel="#{sit.label}" />
+				</p:selectOneButton>
+			</div>
+
+
+		</div>
+
+
+		<f:facet name="footer">
+			<p:spacer height="15" />
+			<div class="ui-g  ui-fluid">
+				<div class="ui-lg-3" />
+
+				<!--   B O T A O:   P E S Q U I S A R   -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-pesquisar" value="Pesquisar"
+						title="Pesquisar" styleClass="btn-lg" icon="fa fa-fw fa-search"
+						action="#{perfilController.pesquisar()}" update="@form result" />
+				</div>
+
+
+				<!--   B O T A O:   L I M P A R -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-limpar" value="Limpar" title="Limpar"
+						styleClass="btn-lg" icon="fa fa-fw fa-refresh"
+						action="#{perfilController.limpar()}" process="@this"
+						update="@form">
+						<o:ignoreValidationFailed />
+					</p:commandButton>
+				</div>
+				<div class="ui-lg-3" />
+			</div>
+
+		</f:facet>
+	</p:panel>
+</ui:composition>

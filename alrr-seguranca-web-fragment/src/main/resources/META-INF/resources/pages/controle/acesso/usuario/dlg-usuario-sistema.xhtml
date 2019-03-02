@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-usuario-sistema" widgetVar="dlg-usuario-sistema"
+	showEffect="clip" hideEffect="clip" closeOnEscape="true"
+	showHeader="false" responsive="true" modal="true" resizable="false"
+	closable="false" appendTo="@(body)" styleClass="ui-fluid nopad"
+	fitViewport="true">
+
+
+	<o:form id="frm-usuario-sistema">
+		<p:growl id="msgs-usuario-sistema" />
+		<p:tooltip />
+		<p:panel header="Acesso ao Sistema" id="pnl-sistema">
+
+
+			<p:panelGrid columns="1" cellpadding="10"
+				styleClass="ui-panelgrid-blank" layout="grid">
+				<!-- campo: SISTEMA -->
+				<h:panelGroup>
+					<p:outputLabel value="Selecione o Sistema"
+						title="Sistema do Perfil" for="usuario-sistema" />
+					<p:selectOneMenu id="usuario-sistema"
+						value="#{usuarioSistemaController.sistemaSelecionado}"
+						layout="responsive" columns="1" converter="#{entityConverter}"
+						required="true">
+						<f:selectItem noSelectionOption="true" itemLabel="[Selecione]"
+							itemDisabled="true" />
+						<f:selectItems value="#{usuarioSistemaController.sistemas}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}"
+							itemDescription="#{tipo.descricao}" />
+						<!-- <p:ajax event="itemSelect" update="pnl-perfis" process="@this"
+							listener="#{sistemaPerfilController.handleGrupo}" /> -->
+					</p:selectOneMenu>
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:outputLabel value="Situação" for="situacao" />
+					<p:selectOneButton id="situacao" label="Situação"
+						value="#{usuarioSistemaController.entity.situacao}"
+						required="true" unselectable="false">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+				</h:panelGroup>
+			</p:panelGrid>
+
+			<!-- BOTOES -->
+			<f:facet name="footer">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+
+					<!-- FECHAR -->
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" title="Fechar" styleClass="btn-lg"
+						oncomplete="PF('dlg-usuario-sistema').hide()" process="@this" />
+
+					<!-- SALVAR -->
+					<p:commandButton id="btn-salvar" value="Salvar"
+						icon="fa fa-fw fa-floppy-o" styleClass="btn-lg"
+						action="#{usuarioSistemaController.adicionar}"
+						validateClient="true"
+						update="frm-usuario-sistema msgs-usuario-sistema frm-usuario-sistemas:result"
+						process="frm-usuario-sistema"
+						onsuccess="PF('dlg-usuario-sistema').hide()" />
+
+				</p:panelGrid>
+			</f:facet>
+		</p:panel>
+	</o:form>
+</p:dialog>
+</html>

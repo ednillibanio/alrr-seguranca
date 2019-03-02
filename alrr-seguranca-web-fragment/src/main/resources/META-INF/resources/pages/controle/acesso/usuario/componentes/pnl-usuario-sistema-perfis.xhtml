@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<p:dataTable var="sistemaPerfil" id="result-sistema-perfis"
+		value="#{usuarioSistemaController.sistemaPerfis}"
+		selection="#{usuarioSistemaController.sistemaPerfilSelecionado}"
+		sortBy="#{sistemaPerfil.perfil.grupoPerfil.nome}" expandableRowGroups="true"
+		emptyMessage="Nenhum registro encontrado" reflow="true">
+
+		<f:facet name="header">
+			Perfis de acesso do sistema selecionado
+		</f:facet>
+
+		<p:ajax event="contextMenu" update="result-sistema-perfis" />
+
+		<p:column groupRow="true" headerText="Grupo do Perfil">
+			<h:outputText value="#{sistemaPerfil.perfil.grupoPerfil.nome}" />
+		</p:column>
+
+		<p:column headerText="Perfil">
+			<h:outputText value="#{sistemaPerfil.perfil.nome}" />
+		</p:column>
+
+		<p:column headerText="Situação">
+			<h:outputText value="#{sistemaPerfil.situacao.label}" />
+		</p:column>
+		<!-- <p:column headerText="Evento">
+			<p:commandButton value="Ver Permissões"
+				action="#{perfilPermissaoController.detalhes()}"
+				update="frm-perfil-permissao-detalhes">
+				<f:setPropertyActionListener value="#{sistemaPerfil}"
+					target="#{perfilPermissaoController.entity}" />
+			</p:commandButton>
+		</p:column> -->
+	</p:dataTable>
+
+	<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+	<p:contextMenu for="result-sistema-perfis">
+
+		<!-- BOTAO: PERFIS DE ACESSO-->
+		<p:menuitem value="Perfis de de acesso"
+			update="frm-usuario-sistema-perfil"
+			action="#{usuarioSistemaController.showDialogPerfil}" process="@this"
+			title="Permite definir os perfis de acesso do usuário ao sistema selecionado.">
+		</p:menuitem>
+
+	</p:contextMenu>
+
+
+</ui:composition>

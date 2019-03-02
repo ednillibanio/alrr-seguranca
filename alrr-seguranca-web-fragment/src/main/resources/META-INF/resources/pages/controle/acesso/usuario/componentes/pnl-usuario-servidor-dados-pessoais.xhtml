@@ -1,0 +1,247 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+
+	<div class="ui-g ui-fluid">
+
+		<!--#########################-->
+		<!--  P A I N E L:  F O T O  -->
+		<!--#########################-->
+		<div class="ui-g-12 ui-md-4 ui-lg-4">
+			<div class="ui-g ui-fluid">
+
+				<!--  I M A G E M  (F O T O)  -->
+				<p:outputPanel id="servidor-pnl-foto-servidor">
+					<p:graphicImage id="servidor-foto-vazia-servidor"
+						rendered="#{usuarioController.imagemHelper.imagem== null}"
+						stream="false" styleClass="foto-selecionada"
+						url="http://placehold.it/330x240">
+					</p:graphicImage>
+					<p:graphicImage id="servidor-foto-servidor"
+						value="#{usuarioController.imagemHelper.imagemStreamed}"
+						stream="false" styleClass="foto-selecionada"
+						rendered="#{usuarioController.imagemHelper.imagem != null}">
+					</p:graphicImage>
+				</p:outputPanel>
+			</div>
+
+		</div>
+
+		<!--   P A I N E L:  D A D O S   D O   U S U Á R I O   -->
+		<div class="ui-g-12 ui-md-8 ui-lg-8 nopad">
+
+
+			<!--############################################-->
+			<!--  P A I N E L:  D A D O S  P E S S O A I S  -->
+			<!--############################################-->
+			<div class="ui-g ui-responsive">
+				<div class="ui-lg-12 nopad-bottom">
+					<h3 class="pnl-titulo">
+						<strong>Dados Pessoais</strong>
+					</h3>
+				</div>
+			</div>
+			<div class="ui-g ui-responsive ui-fluid">
+				<div class="ui-lg-12 nopad-top">
+					<p:separator styleClass="pnl-titulo-sep" />
+				</div>
+			</div>
+
+
+			<div class="ui-g">
+
+				<!--  C A M P O:   M A T R I C U L A  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Matrícula" for="servidor-matricula" />
+					<p:inputText id="servidor-matricula" required="true"
+						label="Matrícula" value="#{usuarioController.matricula}">
+						<p:ajax process="@this"
+							listener="#{usuarioController.completarServidorPorMatricula}"
+							update="@form" />
+					</p:inputText>
+					<p:message for="servidor-matricula" display="tooltip" />
+				</div>
+
+
+				<!--  C A M P O:   C P F   -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="CPF" for="servidor-cpf" />
+					<p:inputMask id="servidor-cpf" label="Cpf" title="Cpf do usuário"
+						converter="#{cpfConverter}" maxlength="11" required="true"
+						mask="999.999.999-99" value="#{usuarioController.cpf}">
+						<p:ajax process="@this"
+							listener="#{usuarioController.completarPessoaPorCpf}"
+							update="@form" />
+					</p:inputMask>
+					<p:message for="servidor-cpf" display="tooltip" />
+				</div>
+
+			</div>
+
+
+			<div class="ui-g">
+
+				<!-- NOME COMPLETO -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Nome Completo" for="servidor-nome" />
+					<p:inputText id="servidor-nome"
+						value="#{usuarioController.servidor.pessoaFisica.nome}"
+						label="Nome Completo" disabled="true" />
+					<p:message for="servidor-nome" display="tooltip" />
+				</div>
+
+
+				<!-- DATA NASCIMENTO -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Data Nascimento:"
+						for="servidor-data-nascimento" />
+					<p:inputMask id="servidor-data-nascimento" mask="99/99/9999"
+						label="Data de Nascimento" maxlength="12"
+						value="#{usuarioController.servidor.pessoaFisica.dataNascimento}"
+						disabled="true">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</p:inputMask>
+					<p:message for="servidor-data-nascimento" display="tooltip" />
+				</div>
+
+			</div>
+
+			<!-- LINHA: SEXO & ESTADO CIVIL -->
+			<div class="ui-g">
+
+				<!-- SEXO -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Sexo" for="servidor-sexo" />
+					<p:selectOneButton id="servidor-sexo"
+						converter="omnifaces.GenericEnumConverter"
+						value="#{usuarioController.servidor.pessoaFisica.sexo}"
+						disabled="true">
+						<f:selectItems value="#{cadastroEnumFactory.sexos}" var="sexo"
+							itemValue="#{sexo}" itemLabel="#{sexo.label}" />
+					</p:selectOneButton>
+					<p:message for="servidor-sexo" display="tooltip" />
+				</div>
+
+
+				<!-- ESTADO CIVIL -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Estado Civil" for="servidor-estado-civil" />
+					<p:inputText id="servidor-estado-civil"
+						value="#{usuarioController.servidor.pessoaFisica.estadoCivil.label}"
+						disabled="true" />
+				</div>
+
+			</div>
+
+
+			<!-- LINHA: CELULAR & EMAIL -->
+			<div class="ui-g">
+
+				<!-- CONTATO CELULAR -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Celular" for="servidor-celular" />
+					<p:inputMask id="servidor-celular"
+						value="#{usuarioController.servidor.pessoaFisica.celular}"
+						mask="?(99) 99999-9999" size="15" label="Celular" disabled="true"
+						converter="#{telefoneConverter}" />
+				</div>
+
+				<!-- CONTATO EMAIL -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Email" for="servidor-email" />
+					<p:inputText id="servidor-email" title="Email para contato"
+						type="email" maxlength="250" label="Email"
+						value="#{usuarioController.servidor.pessoaFisica.email}"
+						disabled="true" />
+				</div>
+			</div>
+
+			<!--#####################################################-->
+			<!--  B L O C O:  O U T R A S   I N F O R M A Ç Õ E S    -->
+			<!--#####################################################-->
+			<div class="ui-g ui-responsive">
+				<div class="ui-lg-12 nopad-bottom">
+					<h3 class="pnl-titulo">
+						<strong>Outras Informações</strong>
+					</h3>
+				</div>
+			</div>
+			<div class="ui-g ui-responsive ui-fluid">
+				<div class="ui-lg-12 nopad-top">
+					<p:separator styleClass="pnl-titulo-sep" />
+				</div>
+			</div>
+
+
+			<div class="ui-g">
+				<!--  C A M P O:  S I T U A Ç Ã O  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Situação" for="servidor-sit" />
+					<p:inputText value="#{usuarioController.servidor.situacao.label}"
+						id="servidor-sit" label="Situação"
+						title="Informa a situação do servidor." disabled="true" />
+				</div>
+			</div>
+
+			<div class="ui-g">
+
+				<!--  C A M P O:  L O T A Ç Ã O  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Lotação" for="servidor-lotacao" />
+					<p:inputText value="#{usuarioController.servidor.lotacao.nome}"
+						id="servidor-lotacao" label="Lotação"
+						title="Informe a lotação do servidor." disabled="true" />
+				</div>
+
+
+
+				<!--  C A M P O:  C A R G O  P Ú B L I C O  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Cargo" for="servidor-cargo" />
+					<p:inputText
+						value="#{usuarioController.servidor.cargoPublico.nome}"
+						id="servidor-cargo" label="Cargo"
+						title="Informe o cargo do servidor." disabled="true" />
+				</div>
+			</div>
+
+
+			<div class="ui-g">
+
+				<!--  C A M P O:  D A T A   N O M E A Ç Ã O  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Data Nomeação" for="servidor-data-nomeacao" />
+					<p:inputMask id="servidor-data-nomeacao"
+						value="#{usuarioController.servidor.dataNomeacao}"
+						mask="99/99/9999" title="Informe a data de nomeação do servidor."
+						size="14" maxlength="12" disabled="true">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</p:inputMask>
+				</div>
+
+
+				<!--  C A M P O:  D A T A   E X O N E R A Ç Ã O  -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Data Exoneração"
+						for="servidor-data-exoneracao" />
+					<p:inputMask id="servidor-data-exoneracao"
+						value="#{usuarioController.servidor.dataExoneracao}"
+						mask="99/99/9999"
+						title="Informe a data de exoneração do servidor." size="14"
+						disabled="true" maxlength="12" dir="true">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</p:inputMask>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+</ui:composition>

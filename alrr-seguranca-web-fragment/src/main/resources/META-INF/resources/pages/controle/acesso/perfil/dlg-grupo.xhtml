@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:al="http://java.sun.com/jsf/composite/components/commons"
+	lang="pt-br">
+
+<p:dialog id="dlg-grupo" widgetVar="dlg-grupo" showEffect="clip"
+	hideEffect="clip" closeOnEscape="true" showHeader="false"
+	responsive="true" modal="true" resizable="false" closable="false"
+	appendTo="@(body)" styleClass="ui-fluid ui-md-8 nopad"
+	fitViewport="true">
+	<h:form id="frm-grupo">
+		<p:growl id="msgs-grupo" />
+		<p:tooltip />
+
+
+		<p:panel header="Grupo" id="pnl-grupo">
+
+
+			<p:panelGrid columns="1" cellpadding="10"
+				styleClass="ui-panelgrid-blank" layout="grid">
+
+
+				<!-- NOME DO MODULO -->
+				<h:panelGroup>
+					<p:outputLabel for="nome" value="Nome"
+						title="Nome do Grupo do Perfil" />
+					<p:inputText id="nome" value="#{grupoController.entity.nome}"
+						title="Informe o nome do grupo do perfil. Por exemplo, Superintendência Legislativa."
+						required="true" />
+					<p:message for="nome" display="tooltip" />
+				</h:panelGroup>
+
+
+				<!-- SITUACAO -->
+				<h:panelGroup>
+					<p:outputLabel value="Situação" for="sit"
+						title="Situação do Grupo do Perfil" />
+					<p:selectOneButton id="sit" label="Situação" required="true"
+						value="#{grupoController.entity.situacao}"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+					<p:message for="sit" display="tooltip" />
+				</h:panelGroup>
+
+
+				<!-- DESCRIÇÃO -->
+				<h:panelGroup>
+					<p:outputLabel for="descricao" value="Descrição" />
+					<p:inputTextarea rows="3" id="descricao"
+						value="#{grupoController.entity.descricao}" />
+					<p:message for="descricao" display="tooltip" />
+				</h:panelGroup>
+
+			</p:panelGrid>
+			<!-- BOTOES -->
+			<f:facet name="footer">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" title="Fechar"
+						oncomplete="PF('dlg-grupo').hide()" process="@this" />
+					<p:commandButton id="btn-salvar" value="Salvar" title="Salvar"
+						icon="fa fa-fw fa-floppy-o" action="#{grupoController.salvar()}"
+						validateClient="true" update="frm-grupo msgs-grupo"
+						process="frm-grupo" />
+
+				</p:panelGrid>
+			</f:facet>
+		</p:panel>
+	</h:form>
+
+</p:dialog>
+</html>

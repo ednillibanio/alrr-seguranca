@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-add-sistema-perfil" widgetVar="dlg-add-sistema-perfil"
+	showEffect="clip" hideEffect="clip" closeOnEscape="true"
+	showHeader="false" responsive="true" modal="true" resizable="false"
+	closable="false" appendTo="@(body)" styleClass="ui-fluid nopad"
+	fitViewport="true">
+
+
+	<o:form id="frm-add-sistema-perfil">
+		<p:growl id="msgs-add-sistema-perfil" />
+		<p:tooltip />
+		<p:panel header="Adicionar Perfil de Usuário" id="pnl-perfil">
+
+
+			<p:panelGrid columns="1" cellpadding="10"
+				styleClass="ui-panelgrid-blank" layout="grid">
+
+				<!-- campo: SISTEMA -->
+				<!-- <h:panelGroup>
+					<p:outputLabel value="Sistema" title="Sistema do Perfil" />
+					<p:selectOneMenu id="sistemas"
+						value="#{sistemaPerfilController.sistemaSelecionado}"
+						layout="responsive" converter="#{entityConverter}">
+						<f:selectItems value="#{sistemaController.buscarTodos()}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+						<p:ajax resetValues="true" />
+						<p:ajax event="itemSelect" update="pnl-perfis" process="@this" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+ -->
+
+				<!-- CAMPO: PERFIL -->
+				<h:panelGroup id="pnl-perfis">
+					<p:autoComplete id="perfil"
+						value="#{sistemaPerfilController.perfisSelecionados}"
+						dropdown="true" required="true" converter="#{entityConverter}"
+						multiple="true" emptyMessage="Nenhum registro encontrado"
+						var="perfil" itemValue="#{perfil}" itemLabel="#{perfil.nome}"
+						completeMethod="#{sistemaPerfilController.completarPerfis}"
+						requiredMessage="Perfil obrigatório. Informe o perfil."
+						groupBy="#{sistemaPerfilController.getPerfisAgrupadoPorGrupo(perfil)}" />
+				</h:panelGroup>
+
+
+			</p:panelGrid>
+
+			<!-- BOTOES -->
+			<f:facet name="footer">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+
+					<!-- FECHAR -->
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" title="Fechar"
+						oncomplete="PF('dlg-add-sistema-perfil').hide()" process="@this" />
+
+					<!-- SALVAR -->
+					<p:commandButton id="btn-salvar" value="Salvar"
+						icon="fa fa-fw fa-floppy-o"
+						action="#{sistemaPerfilController.salvar()}" validateClient="true"
+						update="frm-add-sistema-perfil msgs-add-sistema-perfil"
+						process="frm-add-sistema-perfil" />
+
+				</p:panelGrid>
+			</f:facet>
+		</p:panel>
+	</o:form>
+</p:dialog>
+</html>

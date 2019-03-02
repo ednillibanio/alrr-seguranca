@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<!-- FILTRO DE PESQUISA -->
+	<p:panel header="Filtros" toggleable="true">
+
+		<o:validateOneOrMore id="validar"
+			components="login sistemas tipos-usuario nome situacao"
+			message="Informe pelo menos um filtro." />
+
+		<div class="ui-fluid">
+
+			<div class="ui-g">
+
+				<!--  F I L T R O: L O G I N  -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Login" label="login" for="login" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:inputText id="login" label="Login"
+						value="#{usuarioController.login}">
+						<p:ajax resetValues="true" />
+					</p:inputText>
+				</div>
+
+
+				<!-- FILTRO: SISTEMA -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Sistema(s)" label="sistema" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:selectCheckboxMenu id="sistemas"
+						value="#{usuarioController.sistemasSelecionados}"
+						layout="responsive" columns="1" multiple="true"
+						converter="#{entityConverter}">
+						<f:selectItems value="#{sistemaController.buscarTodos()}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+						<p:ajax resetValues="true" />
+					</p:selectCheckboxMenu>
+				</div>
+			</div>
+			<!--  -->
+			<div class="ui-g">
+				<!-- FILTRO: TIPO USUÁRIO -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Tipo(s)" label="Tipo()" for="tipos-usuario"
+						title="Tipos de Usuário" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:selectCheckboxMenu id="tipos-usuario"
+						value="#{usuarioController.tiposUsuarioSelecionados}"
+						layout="responsive" columns="1" multiple="true"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{segurancaEnumFactory.tiposDeUsuario}"
+							var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.label}" />
+						<p:ajax resetValues="true" />
+					</p:selectCheckboxMenu>
+				</div>
+			</div>
+
+			<!-- LINHA: NOME E SITUAÇÃO -->
+			<div class="ui-g">
+
+				<!-- FILTRO: NOME DA PESSOA -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Nome" label="nome" for="nome" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:inputText id="nome" label="Nome"
+						value="#{usuarioController.nome}">
+						<p:ajax resetValues="true" />
+					</p:inputText>
+				</div>
+
+				<!-- FILTRO: SITUACAO DO USUÁRIO -->
+				<div class="ui-g-2">
+					<p:outputLabel value="Situação" label="Situação" for="situacao" />
+				</div>
+				<div class="ui-g-4">
+					<p:selectOneButton id="situacao" label="Situação"
+						value="#{usuarioController.situacao}">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+				</div>
+			</div>
+
+		</div>
+
+
+		<f:facet name="footer">
+			<p:spacer height="15" />
+			<div class="ui-g ui-fluid">
+				<div class="ui-lg-3" />
+
+				<!--   B O T A O:   P E S Q U I S A R   -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-pesquisar" value="Pesquisar"
+						styleClass="btn-lg" icon="fa fa-fw fa-search"
+						action="#{usuarioController.pesquisar()}" update="@form" />
+				</div>
+
+
+				<!--   B O T A O:   L I M P A R -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-limpar" value="Limpar" styleClass="btn-lg"
+						icon="fa fa-fw fa-refresh"
+						actionListener="#{usuarioController.limpar()}" process="@this"
+						update="@form" />
+				</div>
+				<div class="ui-lg-3" />
+			</div>
+
+		</f:facet>
+	</p:panel>
+</ui:composition>

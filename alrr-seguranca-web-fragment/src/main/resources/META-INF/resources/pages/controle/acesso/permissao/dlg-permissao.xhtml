@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-permissao" widgetVar="dlg-permissao" showEffect="clip"
+	hideEffect="clip" closeOnEscape="true" showHeader="false"
+	responsive="true" modal="true" resizable="false" closable="false"
+	appendTo="@(body)" styleClass="ui-fluid ui-md-6 ui-lg-6 nopad"
+	fitViewport="true">
+
+	<h:form id="frm-permissao">
+		<p:growl id="msgs-permissao" />
+		<p:tooltip />
+
+		<p:panel header="Permissão" id="pnl-permissao"
+			styleClass="nopad-left nopad-right">
+
+			<p:panelGrid columns="1"
+				styleClass="ui-panelgrid-blank ui-fluid ui-responsive" layout="grid">
+
+				<!--  C A M P O:  S I S T E M A   -->
+				<h:panelGroup>
+					<p:outputLabel for="sistema" value="Sistema"
+						title="Informe o sistema" />
+					<div class="ui-g">
+
+						<p:selectOneMenu id="sistema"
+							value="#{sistemaPermissaoController.sistema}" layout="responsive"
+							converter="#{entityConverter}" required="true"
+							disabled="#{sistemaPermissaoController.isEditavel()}">
+							<f:selectItem itemLabel="[Selecione]" noSelectionOption="true"
+								itemDisabled="true" />
+							<f:selectItems value="#{sistemaPermissaoController.sistemas}"
+								var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+							<p:ajax event="change" process="@this" update="objeto operacao" />
+						</p:selectOneMenu>
+					</div>
+				</h:panelGroup>
+
+
+				<!--  C A M P O:  O B J E T O   -->
+				<h:panelGroup id="pnl-objeto">
+					<p:outputLabel for="objeto" value="Objeto" title="Nome do objeto" />
+					<div class="ui-g">
+						<div class="ui-g-10 ui-md-10 ui-lg-10 ui-g-nopad">
+							<p:autoComplete id="objeto" dropdown="true" required="true"
+								value="#{sistemaPermissaoController.objetoSelecionado}"
+								var="objeto" itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+								completeMethod="#{sistemaPermissaoController.completarObjetos}"
+								forceSelection="true" converter="#{entityConverter}"
+								emptyMessage="Nenhum objeto encontrado"
+								disabled="#{sistemaPermissaoController.sistema == null || sistemaPermissaoController.isEditavel()}"
+								groupBy="#{sistemaPermissaoController.getObjetosAgrupadoPorModulo(objeto)}">
+								<p:ajax event="itemSelect" process="@this" />
+							</p:autoComplete>
+						</div>
+
+						<!--  B O T A O:  N O V O   O B J E T O   -->
+						<div class="ui-g-2 ui-md-2 ui-lg-2 ui-g-nopad">
+							<p:commandButton id="btn-objeto-novo" styleClass="btn-g"
+								icon="fa fa-fw fa-file-text-o" title="Novo Objeto"
+								update="dlg-objeto" process="@this"
+								action="#{objetoController.novo()}" />
+						</div>
+					</div>
+
+				</h:panelGroup>
+
+				<!--  C A M P O:  O P E R A Ç Ã O   -->
+				<h:panelGroup>
+					<p:outputLabel for="operacao" value="Operação" title="Operação" />
+
+					<div class="ui-g">
+						<div class="ui-g-10 ui-md-10 ui-lg-10 ui-g-nopad">
+							<p:autoComplete id="operacao" dropdown="true" required="true"
+								value="#{sistemaPermissaoController.operacaoSelecionada}"
+								var="operacao" itemLabel="#{operacao.nome}"
+								itemValue="#{operacao}"
+								completeMethod="#{sistemaPermissaoController.completarOperacoes}"
+								forceSelection="true" converter="#{entityConverter}"
+								disabled="#{sistemaPermissaoController.sistema == null || sistemaPermissaoController.isEditavel()}"
+								emptyMessage="Nenhuma operação encontrada">
+							</p:autoComplete>
+						</div>
+
+						<!--  B O T A O:  N O V A   O P E R A Ç Ã O   -->
+						<div class="ui-g-2 ui-md-2 ui-lg-2 ui-g-nopad">
+							<p:commandButton id="btn-operacao-novo" styleClass="btn-g"
+								icon="fa fa-fw fa-file-text-o" title="Nova Operação"
+								update="dlg-operacao" process="@this"
+								action="#{operacaoController.novo()}" />
+						</div>
+					</div>
+				</h:panelGroup>
+
+				<!-- VALOR -->
+				<h:panelGroup>
+					<p:outputLabel for="valor" value="Valor" title="Valor" />
+					<div class="ui-g">
+						<div class="ui-g-10 ui-md-10 ui-lg-10 ui-g-nopad">
+							<p:inputText id="valor"
+								value="#{sistemaPermissaoController.valor}" required="true">
+								<p:message id="msg-valor" for="valor" display="tooltip" />
+							</p:inputText>
+						</div>
+
+						<!-- BOTAO : SUGERIR VALOR -->
+						<div class="ui-g-2 ui-md-2 ui-lg-2 ui-g-nopad">
+							<p:commandButton id="btn-sugerir-valor" styleClass="btn-g"
+								icon="fa fa-fw fa-random"
+								title="Sistema preenche o valor automaticamente"
+								process="@this operacao objeto"
+								actionListener="#{sistemaPermissaoController.preencherValor}"
+								update="valor" />
+						</div>
+					</div>
+				</h:panelGroup>
+
+				<!--  C A M P O:  D E S C R I Ç  Ã O  -->
+				<!-- <h:panelGroup>
+					<p:outputLabel for="descricao" value="Descrição" />
+					<p:inputTextarea rows="3" id="descricao"
+						value="#{sistemaPermissaoController.entity.descricao}" />
+					<p:message for="descricao" display="tooltip" />
+				</h:panelGroup> -->
+			</p:panelGrid>
+
+			<!--  B O T Õ E S:  S A L V A R   E   F E C H A R   -->
+			<f:facet name="footer">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+
+
+					<!--  B O T Ã O:  F E C H A R  -->
+					<p:commandButton value="Fechar" id="btn-fechar" title="Fechar"
+						icon="fa fa-fw fa-times" styleClass="btn-lg"
+						oncomplete="PF('dlg-permissao').hide()" process="@this" />
+
+
+					<!--  B O T Ã O:  S A L V A R  -->
+					<p:commandButton id="btn-salvar" title="Salvar" value="Salvar"
+						icon="fa fa-fw fa-floppy-o" styleClass="btn-lg"
+						validateClient="true"
+						action="#{sistemaPermissaoController.salvar()}"
+						process="frm-permissao" update="frm-permissao msgs-permissao" />
+
+				</p:panelGrid>
+			</f:facet>
+
+		</p:panel>
+	</h:form>
+</p:dialog>
+</html>

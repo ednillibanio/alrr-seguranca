@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:al="http://java.sun.com/jsf/composite/components/commons"
+	lang="pt-br">
+
+<p:dialog id="dlg-objeto" widgetVar="dlg-objeto" showEffect="clip"
+	hideEffect="clip" closeOnEscape="true" showHeader="false"
+	responsive="true" modal="true" resizable="false" closable="false"
+	appendTo="@(body)" styleClass="ui-fluid ui-md-8 nopad"
+	fitViewport="true">
+	<h:form id="frm-objeto">
+		<p:growl id="msgs-objeto" />
+		<p:tooltip />
+		<p:panel header="Objeto" id="pnl-objeto">
+
+
+			<p:panelGrid columns="1" cellpadding="10"
+				styleClass="ui-panelgrid-blank" layout="grid">
+
+
+				<!--  C A M P O:  S I S T E M A   -->
+				<h:panelGroup>
+					<p:outputLabel for="sistema" value="Sistema"
+						title="Informe o sistema" />
+					<div class="ui-g">
+
+						<p:selectOneMenu id="sistema"
+							value="#{objetoController.entity.sistema}" layout="responsive"
+							converter="#{entityConverter}" required="true">
+							<f:selectItem itemLabel="[Selecione]" noSelectionOption="true"
+								itemDisabled="true" />
+							<f:selectItems value="#{objetoController.sistemas}" var="sistema"
+								itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+							<p:ajax event="change" process="@this" update="modulo" />
+						</p:selectOneMenu>
+
+					</div>
+				</h:panelGroup>
+				<!--  C A M P O:  M O D U L O  -->
+				<h:panelGroup>
+					<p:outputLabel for="modulo" value="Módulo" title="Nome do módulo" />
+					<div class="ui-g">
+						<div class="ui-g-10 ui-md-10 ui-lg-10 ui-g-nopad">
+							<p:autoComplete id="modulo" dropdown="true" required="true"
+								value="#{objetoController.entity.modulo}" var="modulo"
+								itemLabel="#{modulo.nome}" itemValue="#{modulo}"
+								completeMethod="#{objetoController.completarModulos}"
+								disabled="#{objetoController.entity.sistema == null || objetoController.isEditavel()}"
+								forceSelection="true" converter="#{entityConverter}"
+								emptyMessage="Nenhum módulo encontrado" />
+						</div>
+
+						<!--  B O T Ã O:  N O V O   M O D U L O   -->
+						<div class="ui-g-2 ui-md-2 ui-lg-2 ui-g-nopad">
+							<p:commandButton id="btn-modulo-novo" styleClass="btn-g"
+								icon="fa fa-fw fa-file-text-o" title="Novo Módulo"
+								update="dlg-modulo" process="@this"
+								action="#{moduloController.novo()}" />
+						</div>
+					</div>
+				</h:panelGroup>
+
+				<!--  C A M P O:  N O M  E   D O   O B J E T O  -->
+				<h:panelGroup>
+					<p:outputLabel for="nome" value="Nome" title="Nome do objeto" />
+					<p:inputText id="nome" value="#{objetoController.entity.nome}"
+						required="true" converter="#{capitalizeFullyConverter}" />
+				</h:panelGroup>
+
+				<!--  C A M P O:  S I T U A Ç Ã O  -->
+				<h:panelGroup>
+					<p:outputLabel value="Situação" for="sit" />
+					<p:selectOneButton id="sit" label="Situação" required="true"
+						value="#{objetoController.entity.situacao}"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+					<p:message for="sit" display="tooltip" />
+				</h:panelGroup>
+
+				<!--  C A M P O:  D E S C R I Ç  Ã O  -->
+				<h:panelGroup>
+					<p:outputLabel for="descricao" value="Descrição" />
+					<p:inputTextarea rows="3" id="descricao"
+						value="#{objetoController.entity.descricao}" />
+					<p:message for="descricao" display="tooltip" />
+				</h:panelGroup>
+
+			</p:panelGrid>
+
+			<!--  B O T Õ E S:  S A L V A R   E   F E C H A R   -->
+			<f:facet name="footer">
+				<p:panelGrid columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank">
+
+					<!--  B O T Ã O:  F E C H A R  -->
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" styleClass="btn-lg" title="Fechar"
+						oncomplete="PF('dlg-objeto').hide()" process="@this" />
+
+					<!--  B O T Ã O:  S A L V A R  -->
+					<p:commandButton id="btn-salvar" value="Salvar"
+						icon="fa fa-fw fa-floppy-o" styleClass="btn-lg"
+						action="#{objetoController.salvar()}" validateClient="true"
+						update="frm-objeto msgs-objeto" process="frm-objeto" />
+
+				</p:panelGrid>
+			</f:facet>
+		</p:panel>
+	</h:form>
+</p:dialog>
+</html>

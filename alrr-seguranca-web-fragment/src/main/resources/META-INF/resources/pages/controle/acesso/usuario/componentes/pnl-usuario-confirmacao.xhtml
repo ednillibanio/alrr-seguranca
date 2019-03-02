@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+
+	<div class="ui-g ui-fluid">
+		<div class="ui-g-12 ui-md-8 ui-lg-8 nopad">
+
+			<!-- SISTEMA -->
+			<!-- <div class="ui-g">
+				
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Sistema" />
+					<p:inputText id="sistema" disabled="true"
+						value="#{sessaoController.sistemaSelecionado.nome}" />
+				</div>
+			</div> -->
+
+			<!-- MATRICULA -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Login" for="login-matricula" />
+					<p:inputText id="login-matricula"
+						disabled="#{usuarioController.entity.tipoUsuario ne 'SISTEMA'}"
+						required="true" value="#{usuarioController.entity.login}" />
+				</div>
+			</div>
+
+			<!-- SENHA -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Senha" for="senha" />
+					<p:password id="senha" required="true"
+						value="#{usuarioController.entity.senha}" />
+					<p:message for="senha" display="tooltip" />
+				</div>
+
+				<!-- CONFIRMA-SENHA -->
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Confirma Senha" for="confirma-senha" />
+					<p:password id="confirma-senha" required="true"
+						value="#{usuarioController.entity.confirmaSenha}" />
+					<p:message for="confirma-senha" display="tooltip" />
+				</div>
+
+			</div>
+
+			<!-- SITUACAO -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-12 ui-lg-6">
+					<p:outputLabel value="Sitação" for="situacao" />
+					<p:selectOneButton id="situacao" label="Situação"
+						value="#{usuarioController.entity.situacao}">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+				</div>
+			</div>
+		</div>
+	</div>
+	<h:panelGroup
+		rendered="#{usuarioController.entity.tipoUsuario ne 'SISTEMA'}">
+		<hr style="opacity: 0.5;" />
+		<div class="ui-g ui-fluid">
+
+			<div class="ui-g-12 ui-md-8 ui-lg-8 nopad">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-6">
+						<p:selectBooleanCheckbox>
+							<p:ajax update="login" />
+						</p:selectBooleanCheckbox>
+						<p:outputLabel value="Integrar autenticação AD/LDAP" />
+					</div>
+				</div>
+				<div class="ui-g">
+					<!-- LOGIN LDAP -->
+					<div class="ui-g-12 ui-md-12 ui-lg-6">
+						<p:outputLabel value="Login AD/LDAP" for="login"
+							title="Login AD/LDAP" />
+						<p:inputText id="login" disabled=""
+							value="#{usuarioController.entity.loginLDAP}" />
+						<p:message for="login" display="tooltip" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:panelGroup>
+
+</ui:composition>

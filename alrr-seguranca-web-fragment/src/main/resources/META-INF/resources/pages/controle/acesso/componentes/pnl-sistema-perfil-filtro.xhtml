@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+
+	<o:validateOneOrMore id="oneOrMore"
+		components="tipos-usuario grupos-perfil perfis situacao"
+		message="Informe pelo menos um campo do filtro." />
+
+	<!-- FILTRO DE PESQUISA -->
+	<p:panel header="Filtros" toggleable="true">
+
+		<div class="ui-fluid">
+
+
+			<!-- FILTRO: SISTEMA -->
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Sistema" label="sistema" for="sistema" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:selectOneMenu id="sistema"
+						value="#{sistemaPerfilController.sistemaSelecionado}"
+						layout="responsive" converter="#{entityConverter}" required="true"
+						title="Selecione o sistema que deseja pesquisar.">
+						<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
+						<f:selectItems value="#{sistemaPerfilController.sistemas}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+						<p:ajax event="change" process="@this" />
+						<p:ajax resetValues="true" />
+					</p:selectOneMenu>
+				</div>
+			</div>
+
+			<!-- FILTRO: GRUPO DE USUÁRIO && PERFIL -->
+			<div class="ui-g">
+
+				<!-- FILTRO: TIPOS DE USUÁRIO -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel for="tipos-usuario" value="Tipos de Usuário"
+						title="Tipos de Usuário" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:selectCheckboxMenu id="tipos-usuario"
+						value="#{sistemaPerfilController.grupoDeUsuariosSelecionados}"
+						layout="responsive" columns="1" multiple="true"
+						converter="omnifaces.GenericEnumConverter">
+						<f:selectItems value="#{sistemaPerfilController.tiposDeUsuarios}"
+							var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.label}" />
+						<p:ajax resetValues="true" />
+					</p:selectCheckboxMenu>
+				</div>
+
+
+				<!-- FILTRO: GRUPO DE PERFIL -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Grupos de Perfil" for="grupos-perfil" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:autoComplete id="grupos-perfil"
+						value="#{sistemaPerfilController.gruposPerfisSelecionados}"
+						completeMethod="#{sistemaPerfilController.completarGruposPerfis}"
+						dropdown="true" dropdownMode="multiple" multiple="true"
+						converter="#{entityConverter}" var="grupo" itemValue="#{grupo}"
+						itemLabel="#{grupo.nome}"
+						emptyMessage="Nenhum grupo de perfil encontrado">
+						<p:ajax event="itemSelect" process="@this" />
+						<p:ajax event="itemUnselect" process="@this" />
+						<p:ajax resetValues="true" />
+					</p:autoComplete>
+				</div>
+			</div>
+
+
+			<!--  F I L T R O:  P E R F I L  -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Perfis" label="perfis" for="perfis" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:autoComplete id="perfis"
+						value="#{sistemaPerfilController.perfisSelecionados}"
+						completeMethod="#{sistemaPerfilController.completarPerfisPorNome}"
+						dropdown="true" dropdownMode="multiple" multiple="true"
+						converter="#{entityConverter}" var="perfil" itemValue="#{perfil}"
+						itemLabel="#{perfil.nome}"
+						groupBy="#{sistemaPerfilController.getPerfisAgrupadoPorGrupo(perfil)}"
+						emptyMessage="Nenhum perfil encontrado">
+						<p:ajax event="itemSelect" process="@this" />
+						<p:ajax event="itemUnselect" process="@this" />
+						<p:ajax resetValues="true" />
+					</p:autoComplete>
+				</div>
+
+				<!-- FILTRO: SITUACAO DO PERFIL -->
+				<div class="ui-g-12 ui-md-4 ui-lg-2">
+					<p:outputLabel value="Situação" label="Situação" for="situacao" />
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4">
+					<p:selectOneButton id="situacao" label="Situação"
+						value="#{sistemaPerfilController.situacao}">
+						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+							itemValue="#{sit}" itemLabel="#{sit.label}" />
+					</p:selectOneButton>
+				</div>
+			</div>
+		</div>
+
+		<f:facet name="footer">
+			<p:spacer height="15" />
+			<div class="ui-g  ui-fluid">
+				<div class="ui-lg-3" />
+
+				<!--   B O T A O:   P E S Q U I S A R   -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-pesquisar" value="Pesquisar"
+						styleClass="btn-lg" icon="fa fa-fw fa-search"
+						action="#{sistemaPerfilController.pesquisar()}" update="@form" />
+				</div>
+
+
+				<!--   B O T A O:   L I M P A R -->
+				<div class="ui-g-12 ui-md-6 ui-lg-3">
+					<p:commandButton id="btn-limpar" value="Limpar" styleClass="btn-lg"
+						icon="fa fa-fw fa-refresh"
+						actionListener="#{sistemaPerfilController.limpar()}"
+						process="@this" update="@form" />
+				</div>
+
+				<div class="ui-lg-3" />
+			</div>
+		</f:facet>
+	</p:panel>
+</ui:composition>

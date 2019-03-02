@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+/****************************************************************************************
+* ALE-RR Licença																		*
+* Copyright (C) 2018, ALE-RR															*
+* Boa Vista, RR - Brasil																*
+* Todos os direitos reservados.															*
+* 																						*
+* Este programa é propriedade da Assembleia Legislativa do Estado de Roraima e 			*
+* não é permitida a distribuição, alteração ou cópia da mesma sem prévia autoriazação.	*
+*																						*
+*																						*
+*****************************************************************************************
+* Autor:  Ednil Libanio da Costa Junior													*
+* Versão: 1.0.0 																		*
+****************************************************************************************/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/componentes/core"
+	xmlns:alcore="http://al.rr.leg.br/facelets/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:shiro="http://shiro.apache.org/tags"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/pg.xhtml">
+
+	<!-- MENU GERAL DO SISTEMA  -->
+	<ui:define name="menu">
+		<ui:include src="/menu.xhtml" />
+	</ui:define>
+
+	<!-- HEADER DO DIV MAIN  -->
+	<ui:define name="header-content">
+		<o:form id="frm-header-content">
+
+			<al:header-content titulo="Pesquisar Sistemas">
+				<!-- <ui:include src="manual/sistema-manual.xhtml" /> -->
+			</al:header-content>
+
+		</o:form>
+	</ui:define>
+
+	<!-- FORMULÁRIO DE PESQUISA DE SISTEMAS -->
+	<ui:define name="form-content">
+
+		<o:form id="frm-pg-sistemas" styleClass="pg-form">
+
+			<alcore:ajax-loading trigger="@(.btn-pesquisar)" id="block"
+				block="@(.result)" />
+
+			<p:messages id="msgs" styleClass="msgs">
+				<p:autoUpdate />
+			</p:messages>
+
+			<!--  B O T Ã O:   N O V O   S I S T E M A   -->
+			<shiro:hasPermission name="sistema:incluir">
+				<div class="ui-g ui-fluid">
+					<div class="ui-g-12 ui-md-3 ui-lg-3 ui-xl-3">
+						<alcore:botao-novo id="btn-novo" value="Novo Sistema"
+							action="#{sistemaController.novo()}" update="dlg-sistema"
+							process="@this" />
+					</div>
+				</div>
+			</shiro:hasPermission>
+
+
+			<!-- PAINEL: FILTRO DA PESQUISA -->
+			<ui:include src="componentes/pnl-sistema-filtro.xhtml" />
+
+			<!-- PAINEL: RESULTADO DA PESQUISA -->
+			<ui:include src="componentes/pnl-sistema-resultado.xhtml" />
+
+			<al:dlg-confirm-editar
+				message="Os dados estão desatualizados. É necessário atualizá-los
+				para continuar a operação. Deseja continuar ?"
+				controller="#{sistemaController}" update="@form dlgConfirmId" />
+
+			<!-- <ui:include src="confirm-dialog.xhtml" /> -->
+			<h:outputScript library="js" name="contextMenu.js" />
+		</o:form>
+
+
+
+		<!-- DIALOGS -->
+		<shiro:hasPermission name="sistema:incluir feriado:editar">
+			<ui:include src="dlg-sistema.xhtml" />
+		</shiro:hasPermission>
+	</ui:define>
+
+</ui:composition>
+</html>
+

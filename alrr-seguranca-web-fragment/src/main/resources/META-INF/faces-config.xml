@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+	version="2.3">
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>pg-sistemas</from-outcome>
+			<to-view-id>/pages/sistema/pg-sistemas.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pg-permissoes</from-outcome>
+			<to-view-id>/pages/controle/acesso/permissao/pg-sistema-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pg-perfis</from-outcome>
+			<to-view-id>/pages/controle/acesso/perfil/pg-perfis.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pg-usuarios</from-outcome>
+			<to-view-id>/pages/controle/acesso/usuario/pg-usuarios.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cad-usuario</from-outcome>
+			<to-view-id>/pages/controle/acesso/usuario/cad-usuario.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>sistema-perfil-permissoes</from-outcome>
+			<to-view-id>/pages/controle/acesso/cad-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pg-sistema-perfil-permissoes</from-outcome>
+			<to-view-id>/pages/controle/acesso/pg-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>Cadastro de Usuário</display-name>
+		<from-view-id>/pages/controle/acesso/usuario/cad-usuario.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>fechar</from-outcome>
+			<to-view-id>/pages/controle/acesso/usuario/pg-usuarios.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<display-name>View Sistema Perfil Permissões</display-name>
+		<from-view-id>/pages/controle/acesso/cad-sistema-perfil-permissoes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>fechar</from-outcome>
+			<to-view-id>/pages/controle/acesso/pg-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>novo</from-outcome>
+			<to-view-id>/pages/controle/acesso/cad-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/pages/controle/acesso/pg-sistema-perfil-permissoes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>novo</from-outcome>
+			<to-view-id>/pages/controle/acesso/cad-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editar</from-outcome>
+			<to-view-id>/pages/controle/acesso/cad-sistema-perfil-permissoes.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<application>
+		<resource-bundle>
+			<base-name>br.leg.al.rr.core.componentes</base-name>
+			<var>core</var>
+		</resource-bundle>
+	</application>
+</faces-config>

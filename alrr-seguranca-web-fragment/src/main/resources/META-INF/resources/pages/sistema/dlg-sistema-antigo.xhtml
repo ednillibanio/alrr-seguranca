@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<p:dialog id="dlg-sistema" widgetVar="dlg-sistema" showEffect="clip"
+		hideEffect="clip" closeOnEscape="true" showHeader="false"
+		responsive="true" modal="true" resizable="false" closable="false"
+		appendTo="@(body)" styleClass="ui-fluid ui-md-8 ui-lg-8"
+		fitViewport="true">
+
+
+		<h:form id="frm-sistema">
+			<!-- Serve para exibir mensagem de erro -->
+			<p:tooltip />
+			<p:panel header="Sistema" id="pnl-sistema">
+
+
+				<p:panelGrid columns="1" cellpadding="10"
+					styleClass="ui-panelgrid-blank" layout="grid">
+
+
+					<!-- NOME DO SISTEMA -->
+					<h:panelGroup>
+						<p:outputLabel for="nome" value="Nome" title="Nome do sistema" />
+						<p:inputText id="nome" value="#{sistemaController.entity.nome}"
+							disabled="true" />
+					</h:panelGroup>
+
+
+					<!-- DESCRIÇÃO DO SISTEMA -->
+					<h:panelGroup>
+						<p:outputLabel value="Descrição" for="desc" />
+						<p:inputText id="desc"
+							value="#{sistemaController.entity.descricao}" label="Descrição"
+							disabled="true" />
+					</h:panelGroup>
+					<hr />
+					<p:panelGrid columns="2"
+						styleClass="ui-panelgrid-blank ui-responsive"
+						columnClasses="ui-grid-col-10, ui-grid-col-2" layout="grid">
+
+						<!-- PERMITE MESMA SENHA -->
+						<h:panelGroup>
+							<p:outputLabel value="Permite mesma senha" for="perm-mesma-senha" />
+							<span class="ui-g ui-fluid info"><i>Indica se permite
+									que a nova senha seja igual a senha anterior. Para maior
+									segurança, defina como 'Não'.</i></span>
+						</h:panelGroup>
+						<p:selectBooleanButton id="perm-mesma-senha"
+							label="Permite mesma senha" offLabel="Não" onLabel="Sim"
+							value="#{sistemaController.entity.seguranca.permiteMesmaSenha}"
+							required="true">
+						</p:selectBooleanButton>
+
+						<!-- BLOQUEIA SENHA INVALIDA -->
+						<h:panelGroup>
+							<p:outputLabel
+								value="Número máximo de tentativas de autenticação com senha inválida"
+								for="bloq-senha-invalida" />
+							<span class="ui-g ui-fluid info"><i>O usuário é
+									bloqueado caso atinja número máximo de tentativas de senha
+									invalida. Valor 0 indica que não há limites.</i></span>
+						</h:panelGroup>
+						<p:spinner id="bloq-senha-invalida"
+							value="#{sistemaController.entity.seguranca.bloqueiaSenhaInvalida}"
+							stepFactor="1" min="0" max="4" />
+
+
+						<!-- TROCA SENHA PRIMEIRO ACESSO -->
+						<h:panelGroup>
+							<p:outputLabel value="Troca senha no primeiro acesso"
+								for="troc-senha-primeiro-acesso" />
+							<span class="ui-g ui-fluid info"><i>Obriga o usuário a
+									informar uma nova senha na primeira autenticação no sistema.</i></span>
+
+						</h:panelGroup>
+						<p:selectBooleanButton id="troc-senha-primeiro-acesso"
+							label="Troca a senha no primeiro acesso" offLabel="Não"
+							onLabel="Sim"
+							value="#{sistemaController.entity.seguranca.trocaSenhaPrimeiroAcesso}"
+							required="true">
+
+						</p:selectBooleanButton>
+
+
+						<!-- ENVIAR SENHA POR E-MAIL -->
+						<h:panelGroup>
+							<p:outputLabel value="Enviar senha por e-mail"
+								for="env-senha-email" />
+							<span class="ui-g ui-fluid info"><i>Envia uma nova
+									senha temporaria por email, caso o usuário tenha esquecido e
+									peça para gerar uma nova.</i></span>
+						</h:panelGroup>
+						<p:selectBooleanButton id="env-senha-email"
+							label="Enviar senha por e-mail" offLabel="Não" onLabel="Sim"
+							value="#{sistemaController.entity.seguranca.enviarSenhaPorEmail}"
+							required="true">
+						</p:selectBooleanButton>
+
+					</p:panelGrid>
+
+
+					<hr />
+					<p:panelGrid columns="2"
+						styleClass="ui-panelgrid-blank ui-responsive"
+						columnClasses="ui-grid-col-10, ui-grid-col-2" layout="grid">
+
+						<!-- TAMANHO MINIMO DA SENHA -->
+						<h:panelGroup>
+							<p:outputLabel value="Tamanho mínimo senha" for="tam-min" />
+							<span class="ui-g ui-fluid info"><i>Informa a
+									quantidade mínima de caracteres que uma senha deve ter. Acima
+									de 8 caracteres é considerado uma senha forte. Valor máximo, 20
+									caracteres.</i></span>
+						</h:panelGroup>
+						<p:inputNumber id="tam-min"
+							value="#{sistemaController.entity.seguranca.senha.tamanhoMinimo}"
+							maxValue="#{sistemaController.entity.seguranca.senha.tamanhoMaximo}"
+							decimalPlaces="0" maxlength="2" />
+
+
+						<h:panelGroup>
+							<p:outputLabel value="Quantidade mínima de digitos"
+								for="qte-min-digitos" />
+							<span class="ui-g ui-fluid info"><i>Define a
+									quantidade mínima de números inteiros na senha. A partir de 2
+									digitos é o recomendado para uma senha forte.</i></span>
+						</h:panelGroup>
+						<p:inputNumber id="qte-min-digitos"
+							value="#{sistemaController.entity.seguranca.senha.qtdeMinDigitos}"
+							decimalPlaces="0" maxlength="2" />
+
+						<h:panelGroup>
+							<p:outputLabel value="Quantidade mínima de letras maiusculas"
+								for="qte-min-maiusculas" />
+							<span class="ui-g ui-fluid info"><i>Define a
+									quantidade mínima de letras maiusculas na senha. Recomenda-se
+									pelo menos 2 letras maiusculas.</i></span>
+						</h:panelGroup>
+						<p:inputNumber id="qte-min-maiusculas"
+							value="#{sistemaController.entity.seguranca.senha.qtdeMinLetrasMaiusculas}"
+							decimalPlaces="0" maxlength="2" />
+
+
+						<h:panelGroup>
+							<p:outputLabel value="Quantidade mínima de letras minusculas"
+								for="qte-min-minusculas" />
+							<span class="ui-g ui-fluid info"><i>Define a
+									quantidade mínima de letras minusculas na senha. Recomenda-se
+									pelo menos 2 letras minusculas.</i></span>
+						</h:panelGroup>
+						<p:inputNumber id="qte-min-minusculas"
+							value="#{sistemaController.entity.seguranca.senha.qtdeMinLetrasMinusculas}"
+							decimalPlaces="0" maxlength="2" />
+
+
+						<h:panelGroup>
+							<p:outputLabel value="Quantidade mínima de simbolos"
+								for="qte-min-simbolos" />
+							<span class="ui-g ui-fluid info"><i>Define a
+									quantidade mínima de simbolos '&#64;&#36;&#41;&#40;&#37;&#38;'
+									na senha. </i></span>
+						</h:panelGroup>
+						<p:inputNumber id="qte-min-simbolos"
+							value="#{sistemaController.entity.seguranca.senha.qtdeMinSimbolos}"
+							decimalPlaces="0" maxlength="2" />
+
+
+					</p:panelGrid>
+				</p:panelGrid>
+
+				<!-- BOTOES -->
+				<f:facet name="footer">
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="ui-panelgrid-blank">
+						<p:commandButton value="Cancelar" id="btn-cancelar"
+							title="Cancelar" icon="fa fa-fw fa-times"
+							oncomplete="PF('dlg-sistema').hide()" process="@this" />
+						<p:commandButton id="btn-salvar" value="Salvar"
+							icon="fa fa-fw fa-floppy-o"
+							action="#{sistemaController.salvarListaEntidades()}" validateClient="true"
+							update="frm-sistema dlg-sistema" ajax="false"
+							process="frm-sistema" />
+
+					</p:panelGrid>
+				</f:facet>
+			</p:panel>
+		</h:form>
+
+	</p:dialog>
+</ui:composition>

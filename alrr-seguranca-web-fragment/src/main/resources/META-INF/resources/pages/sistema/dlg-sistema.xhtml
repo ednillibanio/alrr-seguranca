@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+/****************************************************************************************
+* ALE-RR Licença																		*
+* Copyright (C) 2018, ALE-RR															*
+* Boa Vista, RR - Brasil																*
+* Todos os direitos reservados.															*
+* 																						*
+* Este programa é propriedade da Assembleia Legislativa do Estado de Roraima e 			*
+* não é permitida a distribuição, alteração ou cópia da mesma sem prévia autoriazação.	*
+*																						*
+*																						*
+*****************************************************************************************
+* Autor:  Ednil Libanio da Costa Junior													*
+* Versão: 1.0.0 																		*
+****************************************************************************************/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/componentes/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:alcore="http://al.rr.leg.br/facelets/core"
+	xmlns:alcommons="http://al.rr.leg.br/facelets/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:shiro="http://shiro.apache.org/tags"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/dialog.xhtml">
+
+
+	<!--   P A R A M E T R O S   D E   C O N F I G U R A Ç Ã O   -->
+	<!--   D O   T E M P L A T E:   D I A L O G   -->
+	<ui:param name="dlgid" value="#{sistemaController.novoDialogName}" />
+	<ui:param name="widgetVar" value="#{sistemaController.novoDialogName}" />
+	<ui:param name="frmid" value="frm-sistema" />
+	<ui:param name="panelheader" value="Cadastro de Sistema" />
+	<ui:param name="columns" value="1" />
+
+	<ui:define name="form-dialog">
+		<p:defaultCommand target="frm-sistema:btn-salvar" />
+	</ui:define>
+
+	<!-- ####################################### -->
+	<!--   C O N T E Ú D O   D O   D I A L O G   -->
+	<!-- ####################################### -->
+	<ui:define name="dialog-content">
+
+		<!--   C A M P O:   N O M E   D O   S I S T E M A   -->
+		<al:campo value="Nome" for="nome" title="Nome do campo">
+			<p:inputText id="nome" value="#{sistemaController.entity.nome}"
+				disabled="#{sistemaController.isEditavel()}" />
+		</al:campo>
+
+		<!--   C A M P O:   D E S C R I Ç Ã O   D O   S I S T E M A   -->
+		<al:campo value="Valor Estático" for="valor"
+			title="Breve descrição do sistema">
+			<p:selectOneMenu id="valor" value="#{sistemaController.entity.valor}"
+				required="true">
+				<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
+				<f:selectItems var="sistema"
+					value="#{segurancaUtilsEnumFactory.sistemas}"
+					itemValue="#{sistema}" itemLabel="#{sistema.label}" />
+			</p:selectOneMenu>
+		</al:campo>
+
+		<!--   C A M P O:   D E S C R I Ç Ã O   D O   S I S T E M A   -->
+		<al:campo value="Descrição" for="desc"
+			title="Breve descrição do sistema">
+			<p:inputTextarea id="desc"
+				value="#{sistemaController.entity.descricao}" label="Descrição" />
+		</al:campo>
+
+	</ui:define>
+
+	<!-- ################################### -->
+	<!--   R O D A P É   D O   D I A L O G   -->
+	<!-- ################################### -->
+
+	<!--   B O T Ã O:   F E C H A R   -->
+	<ui:define name="btn-esquerda">
+		<alcore:botao-fechar id="btnfechar"
+			oncomplete="PF('dlg-sistema').hide()" immediate="true" />
+	</ui:define>
+
+	<!--   B O T Ã O:   S A L V A R   -->
+	<ui:define name="btn-direita">
+		<alcore:botao-salvar id="btnsalvar"
+			action="#{sistemaController.salvar()}" validateClient="true"
+			update="frm-sistema @(.msgs-dialog) @(.result)" process="@form" />
+	</ui:define>
+
+</ui:composition>
+</html>

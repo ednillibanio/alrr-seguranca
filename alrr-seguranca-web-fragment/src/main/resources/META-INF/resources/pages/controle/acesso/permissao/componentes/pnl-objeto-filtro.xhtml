@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<!-- FILTRO DE PESQUISA -->
+	<p:panel header="Filtros" toggleable="true">
+		<div class="ui-g ui-fluid">
+
+			<!-- FILTRO: SISTEMA -->
+			<div class="ui-g-2 ui-lg-2 ui-md-2">
+				<p:outputLabel value="Sistema" label="sistema" for="sistema" />
+			</div>
+			<div class="ui-g-4 ui-lg-4 ui-md-4">
+
+				<p:selectOneMenu id="sistema" label="Sistema"
+					value="#{perfilController.sistemaSelecionado}">
+					<f:selectItems value="#{sistemaService.buscarTodos()}"
+						var="sistema" itemLabel="#{sistema}" itemValue="#{sistema}" />
+				</p:selectOneMenu>
+			</div>
+
+			<!-- FILTRO: NOME DO PERFIL -->
+			<div class="ui-g-2 ui-lg-2 ui-md-2">
+				<p:outputLabel value="Nome" label="nome" for="nome" />
+			</div>
+			<div class="ui-g-4 ui-lg-4 ui-md-4">
+				<p:inputText id="nome" label="Nome" value="#{perfilController.nome}">
+					<p:ajax resetValues="true" />
+				</p:inputText>
+			</div>
+
+			<!-- FILTRO: SITUACAO DO PERFIL -->
+			<div class="ui-g-2">
+				<p:outputLabel value="Situação" label="Situação" for="situacao" />
+			</div>
+			<div class="ui-g-4">
+				<p:selectOneButton id="situacao" label="Situação"
+					value="#{perfilController.situacao}">
+					<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
+						itemValue="#{sit}" itemLabel="#{sit.label}" />
+				</p:selectOneButton>
+			</div>
+
+
+		</div>
+
+
+		<f:facet name="footer">
+			<p:spacer height="15" />
+			<div class="ui-g">
+				<div class="ui-lg-4 ui-md-2" />
+
+				<!-- PESQUISAR -->
+				<div class="ui-g-12 ui-lg-2 ui-md-4 ui-fluid">
+					<p:commandButton id="btn-pesquisar" value="Pesquisar"
+						styleClass="btn-lg" icon="fa fa-fw fa-search"
+						actionListener="#{sistemaController.pesquisar()}" update="@form"
+						process="@this" />
+				</div>
+
+
+				<!-- LIMPAR -->
+				<div class="ui-g-12 ui-lg-2 ui-md-4 ui-fluid">
+					<p:commandButton id="btn-limpar" value="Limpar" styleClass="btn-lg"
+						icon="fa fa-fw fa-refresh"
+						actionListener="#{sistemaController.limpar()}" process="@this"
+						update="@form" />
+				</div>
+
+
+				<div class="ui-lg-2 ui-md-2" />
+			</div>
+		</f:facet>
+	</p:panel>
+</ui:composition>

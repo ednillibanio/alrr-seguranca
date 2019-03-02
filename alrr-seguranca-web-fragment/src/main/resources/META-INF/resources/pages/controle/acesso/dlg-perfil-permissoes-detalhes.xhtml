@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-perfil-permissao-detalhes"
+	widgetVar="dlg-perfil-permissao-detalhes" showEffect="clip"
+	hideEffect="clip" closeOnEscape="true" showHeader="false"
+	responsive="true" modal="true" resizable="false" closable="false"
+	appendTo="@(body)" styleClass="ui-fluid ui-md-6 ui-lg-6 nopad"
+	fitViewport="true">
+
+	<o:form id="frm-perfil-permissao-detalhes">
+		<p:panel header="Permissões" styleClass="ui-g-12 ui-md-6 ui-lg-6">
+			<div class="ui-g">
+				<p:dataTable id="result"
+					value="#{of:setToList(perfilPermissaoController.entity.permissoes)}"
+					var="permissao" paginator="true" rows="15"
+					rowsPerPageTemplate="9,15,30"
+					emptyMessage="Nenhum registro encontrado" reflow="true"
+					draggableColumns="false" paginatorPosition="top"
+					paginatorAlwaysVisible="true" expandableRowGroups="true"
+					sortBy="#{permissao.objeto.modulo.nome}">
+
+					<!-- MODULO -->
+					<p:headerRow>
+						<p:column id="modulo" colspan="2">
+							<h:outputText value="#{permissao.objeto.modulo.nome}" />
+						</p:column>
+					</p:headerRow>
+
+					<!-- OBJETO -->
+					<p:column id="nome" groupRow="true" headerText="Objeto">
+						<h:outputText value="#{permissao.objeto.nome}" />
+					</p:column>
+
+					<!-- PERMISSAO -->
+					<p:column id="op" headerText="Operação">
+						<h:outputText value="#{permissao.operacao.nome}" />
+					</p:column>
+
+
+				</p:dataTable>
+			</div>
+
+			<!-- BOTOES -->
+			<f:facet name="footer">
+
+				<div class="ui-g ui-fluid">
+					<div class="ui-md-2 ui-lg-2" />
+					<div class="ui-g-12 ui-md-8 ui-lg-8">
+						<!-- FECHAR -->
+						<p:commandButton value="Fechar" id="btn-fechar"
+							icon="fa fa-fw fa-times" title="Fechar" styleClass="btn-lg"
+							oncomplete="PF('dlg-perfil-permissao-detalhes').hide()"
+							process="@this" />
+					</div>
+					<div class="ui-md-2 ui-lg-2" />
+				</div>
+			</f:facet>
+		</p:panel>
+	</o:form>
+</p:dialog>
+</html>

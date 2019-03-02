@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<p:dialog id="dlg-usuario-sistemas" widgetVar="dlg-usuario-sistemas"
+	showEffect="clip" hideEffect="clip" closeOnEscape="true"
+	showHeader="false" responsive="true" modal="true" resizable="false"
+	closable="false" appendTo="@(body)"
+	styleClass="dlg nopad ui-responsive ui-fluid" fitViewport="true">
+
+
+	<o:form id="frm-usuario-sistemas">
+		<p:growl id="msgs-usuario-sistemas" />
+		<p:tooltip />
+		<p:panel header="Acesso ao Sistema" id="pnl-sistema">
+
+			<!-- BOTAO: ADICIONAR SISTEMA -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-g-md-4 ui-lg-4">
+					<p:commandButton id="btn-add-sistema" icon="fa fa-file-text-o"
+						styleClass="btn-lg" value="Adicionar Sistema"
+						title="Adicionar acesso ao sistema" process="@this"
+						action="#{usuarioSistemaController.novo()}"
+						update="frm-usuario-sistema" />
+				</div>
+			</div>
+			<div class="ui-g ui-responsive">
+
+				<p:dataTable id="result"
+					value="#{usuarioSistemaController.dataModel}" var="entidade"
+					selection="#{usuarioSistemaController.entity}"
+					selectionMode="single" emptyMessage="Nenhum registro encontrado"
+					reflow="true">
+					<f:facet name="header">
+            			Tabela de sistemas com acesso ao usuário
+        			</f:facet>
+
+					<p:ajax event="contextMenu" update="result" />
+					<p:ajax event="rowSelect"
+						listener="#{usuarioSistemaController.atualizarPerfis}"
+						update="@form:result-sistema-perfis" />
+
+					<!-- CAMPO: SISTEMA -->
+					<p:column id="sistema" headerText="Sistema" width="25%">
+						<h:outputText value="#{entidade.sistema.nome}" />
+					</p:column>
+
+					<!-- CAMPO: SITUACAO -->
+					<p:column id="sit" headerText="Situação" width="15%">
+						<h:outputText value="#{entidade.situacao}" />
+						<!-- <p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{entidade.situacao}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneButton id="situacao" value="#{entidade.situacao}"
+									unselectable="false" converter="omnifaces.GenericEnumConverter">
+									<f:selectItems value="#{commonsEnumFactory.statusType}"
+										var="sit" itemValue="#{sit}" itemLabel="#{sit.label}" />
+									<p:ajax event="change" update="result" />
+								</p:selectOneButton>
+							</f:facet>
+						</p:cellEditor> -->
+					</p:column>
+				</p:dataTable>
+
+				<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+				<p:contextMenu for="result">
+
+					<!-- BOTAO: PERFIS DE ACESSO-->
+					<p:menuitem value="Perfis de de acesso"
+						update="frm-usuario-sistema-perfil"
+						action="#{usuarioSistemaController.showDialogPerfil}"
+						process="@this"
+						title="Permite definir os perfis de acesso do usuário ao sistema selecionado.">
+					</p:menuitem>
+
+				</p:contextMenu>
+			</div>
+			<p:spacer height="20" />
+			<p:separator />
+			<p:spacer height="20" />
+
+			<div class="ui-g">
+				<div class="ui-g-12 ui-g-md-4 ui-lg-4">
+					<p:commandButton id="btn-add-sistema-perfil"
+						icon="fa fa-file-text-o" styleClass="btn-lg"
+						value="Adicionar Perfil"
+						title="Adiciona um perfil de acesso do sistema ao usuário"
+						process="@this"
+						actionListener="#{usuarioSistemaController.showDialogSistemaPerfil}"
+						update="frm-usuario-sistema-perfil" />
+				</div>
+			</div>
+			<div class="ui-g ui-responsive">
+
+
+				<ui:include
+					src="/pages/controle/acesso/usuario/componentes/pnl-usuario-sistema-perfis.xhtml" />
+
+			</div>
+
+
+			<!-- BOTOES -->
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-6 ui-lg6">
+					<!-- FECHAR -->
+					<p:commandButton value="Fechar" id="btn-fechar"
+						icon="fa fa-fw fa-times" title="Fechar" styleClass="btn-lg"
+						oncomplete="PF('dlg-usuario-sistemas').hide()" process="@this" />
+				</div>
+				<div class="ui-g-12 ui-md-6 ui-lg6">
+					<p:commandButton id="btn-salvar" value="Salvar"
+						icon="fa fa-fw fa-floppy-o" styleClass="btn-lg"
+						action="#{usuarioSistemaController.trocarSituacao}"
+						validateClient="true" update="frm-usuario-sistemas"
+						process="frm-usuario-sistemas" />
+				</div>
+			</div>
+		</p:panel>
+	</o:form>
+	<ui:include
+		src="/pages/controle/acesso/usuario/dlg-usuario-sistema.xhtml" />
+	<ui:include
+		src="/pages/controle/acesso/usuario/dlg-usuario-sistema-perfil.xhtml" />
+</p:dialog>
+</html>
