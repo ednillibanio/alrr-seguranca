@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/default.xhtml">
+
+	<ui:define name="content">
+		<div class="ui-g ui-responsive">
+			<div class="ui-md-2 ui-lg-1" />
+			<div class="ui-md-8 ui-lg-10">
+				<div class="ui-g nopad">
+					<h1 class="view-titulo" id="pg-titulo">
+						<strong>Sistema &amp; Perfis de Usuário</strong>
+					</h1>
+				</div>
+				<p:separator />
+				<div class="ui-g nopad" style="float: right">
+					<p:outputLabel id="info" styleClass="fa fa-info-circle fa-lg fa-4x"
+						style="font-size:48px;"
+						title="Esta funcionalidade é responsável por manter os usuários que podem acessar o(s) sistema(s)." />
+				</div>
+
+				<o:form id="frm-pg-sistema-perfis">
+
+					<p:blockUI widgetVar="block-view" trigger="btn-pesquisar"
+						block="frm-pg-sistema-perfis">
+					</p:blockUI>
+
+
+
+
+					<!-- BOTAO: NOVO PERFIL -->
+					<div class="ui-g ui-fluid" style="margin-top: 25px;">
+						<div class="ui-g-12 ui-md-7 ui-lg-3 nopad-left">
+							<p:commandButton value="Adicionar Perfil" id="btn-novo-perfil"
+								title="Adiciona um perfil ao sistema"
+								action="#{sistemaPerfilController.novo()}"
+								icon="fa fa-fw fa-file-text" process="@this" styleClass="btn-lg" />
+						</div>
+					</div>
+					<br />
+					<p:spacer height="5" />
+
+					<!-- PAINEL: FILTRO DA PESQUISA -->
+					<span class="ui-g ui-fluid" style="margin-top: 30px;"><i><b>(*)</b>
+							Informe pelo menos um campo do filtro.</i></span>
+					<ui:include src="componentes/pnl-sistema-perfil-filtro.xhtml" />
+
+					<p:messages id="msgs" styleClass="msgs" />
+
+					<!-- PAINEL: RESULTADO DA PESQUISA -->
+					<p:outputPanel
+						rendered="#{sistemaPerfilController.entities.size()>0}">
+						<p:spacer height="35" />
+						<p:separator />
+						<p:spacer height="20" />
+						<ui:include src="componentes/pnl-sistema-perfil-resultado.xhtml" />
+					</p:outputPanel>
+					<p:spacer height="35" />
+
+				</o:form>
+			</div>
+			<div class="ui-md-2 ui-lg-1" />
+		</div>
+		<!-- DIALOGS -->
+		<ui:include src="dlg-sistema-perfil.xhtml" />
+		<ui:include src="perfil/dlg-perfil.xhtml" />
+		<ui:include src="perfil/dlg-grupo.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>
+

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/default.xhtml">
+
+	<ui:define name="content">
+		<h1>Permissões do Perfil</h1>
+		<p:separator />
+
+		<div class="ui-g ui-responsive">
+			<div class="ui-md-2 ui-lg-1" />
+			<div class="ui-md-8 ui-lg-10">
+				<h:form>
+					<p:tabMenu activeIndex="1">
+						<p:menuitem value="Permissões"
+							action="#{perfilPermissaoController.novo()}"
+							icon="fa fa-fw fa-inverse" />
+						<p:menuitem value="Usuários"
+							action="#{perfilPermissaoController.novo()}"
+							icon="fa fa-fw fa-users fa-inverse" />
+					</p:tabMenu>
+				</h:form>
+
+
+				<o:form id="frm-pg-perfil-permissoes">
+					<p:growl id="msgs-perfil-permissoes" />
+					<p:tooltip />
+
+					<p:blockUI widgetVar="block-view" trigger="perfil btn-salvar"
+						block="frm-pg-perfil-permissoes">
+					</p:blockUI>
+
+
+					<!-- <div class="ui-g ui-responsive">
+						<div class="ui-md-2 ui-lg-1" />
+						<div class="ui-md-8 ui-lg-10"> -->
+
+					<!-- TOOLBAR BOTOES: SALVAR, FECHAR E NOVO -->
+					<p:toolbar id="tb">
+						<f:facet name="left">
+
+							<!-- BOTAO: SALVAR -->
+							<p:commandButton id="btn-salvar" title="Salvar" value="Salvar"
+								icon="fa fa-fw fa-floppy-o" validateClient="true"
+								action="#{perfilPermissaoController.salvar()}"
+								update="msgs-perfil-permissoes" />
+
+							<!-- BOTAO: FECHAR -->
+							<p:button value="Fechar" id="btn-fechar" icon="fa fa-fw fa-times"
+								title="Fechar" outcome="home" />
+
+							<span class="ui-separator"> <span
+								class="ui-icon ui-icon-grip-dotted-vertical"></span>
+							</span>
+
+						</f:facet>
+					</p:toolbar>
+
+					<!-- GRUPO DO PERFIL -->
+					<div class="ui-g">
+						<div class="ui-g-2 ui-lg-2 ui-md-2">
+							<p:outputLabel value="Grupo" for="grupo" />
+						</div>
+						<div class="ui-g-4 ui-lg-4 ui-md-4">
+							<p:autoComplete id="grupo"
+								value="#{perfilPermissaoController.grupoSelecionado}"
+								dropdown="true" required="true" converter="#{entityConverter}"
+								emptyMessage="Nenhum registro encontrado" var="grupo"
+								itemValue="#{grupo}" itemLabel="#{grupo.nome}"
+								completeMethod="#{sistemaPerfilController.completarGruposPerfis}">
+								<p:ajax event="itemSelect" update="perfil" process="@this" />
+							</p:autoComplete>
+						</div>
+					</div>
+
+					<div class="ui-g">
+						<!-- PERFIL -->
+						<div class="ui-g-2 ui-lg-2 ui-md-2">
+							<p:outputLabel value="Perfil" for="perfil" />
+						</div>
+						<div class="ui-g-4 ui-lg-4 ui-md-4">
+							<p:autoComplete id="perfil"
+								value="#{perfilPermissaoController.perfilSelecionado}"
+								dropdown="true" required="true" converter="#{entityConverter}"
+								emptyMessage="Nenhum registro encontrado" var="perfil"
+								itemValue="#{perfil}" itemLabel="#{perfil.nome}"
+								completeMethod="#{sistemaPerfilController.completarPerfisPorGrupo}">
+								<p:ajax event="itemSelect" process="@this"
+									listener="#{perfilPermissaoController.handleSistemaPerfil}"
+									update="permissoes" />
+							</p:autoComplete>
+						</div>
+					</div>
+
+					<span class="ui-g ui-fluid" style="margin-top: 30px;"><i><b>(*)</b>
+							Marque as permissões para o perfil.</i></span>
+					<div class="ui-g">
+
+						<!-- RESULTADO DA PESQUISA -->
+						<p:dataTable id="result"
+							value="#{perfilPermissaoController.usuarios}" var="usuario"
+							paginator="true" rows="15"
+							selection="#{perfilPermissao.usuarioSelecionado}"
+							rowsPerPageTemplate="9,15,30" selectionMode="single"
+							emptyMessage="Nenhum registro encontrado" reflow="true"
+							draggableColumns="false" paginatorPosition="top"
+							paginatorAlwaysVisible="true">
+
+
+							<p:ajax event="contextMenu" update="result" />
+
+
+							<!-- MODULO -->
+							<p:headerRow>
+								<p:column id="modulo" colspan="3">
+									<h:outputText value="#{usuario.login}" />
+								</p:column>
+							</p:headerRow>
+							<!-- OBJETO -->
+							<p:column id="nome" groupRow="true" headerText="Objeto">
+								<h:outputText value="#{permissao.objeto.nome}" />
+							</p:column>
+
+							<!-- PERMISSAO -->
+							<p:column id="op" headerText="Operação">
+								<h:outputText value="#{permissao.operacao.nome}" />
+							</p:column>
+
+
+							<!-- VALOR -->
+							<p:column id="valor" headerText="Valor">
+								<h:outputText value="#{permissao.valor}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+						<p:contextMenu for="result">
+
+							<!-- ********* BOTAO DETALHES ********* -->
+							<!-- <p:menuitem value="Detalhes"
+				actionListener="#{sistemaController.detalhes()}"
+				update=":frmFeriadoDetalhes :frmFeriadoDetalhes:pnl-detalhes">
+			</p:menuitem> -->
+
+
+							<!-- ********* BOTAO EDITAR ********* -->
+							<p:menuitem value="Editar" update="frm-permissao"
+								action="#{permissaoController.editar()}" process="@this">
+							</p:menuitem>
+
+						</p:contextMenu>
+					</div>
+					<!-- 	</div>
+						<div class="ui-md-2 ui-lg-1" />
+					</div> -->
+				</o:form>
+			</div>
+			<div class="ui-md-2 ui-lg-1" />
+		</div>
+		<ui:include src="dlg-grupo.xhtml" />
+		<ui:include src="dlg-perfil.xhtml" />
+
+	</ui:define>
+</ui:composition>
+</html>
+

@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+
+
+	<!--   R E S U L T A D O   D A   P E S Q U I S  A   -->
+	<p:dataTable id="result" value="#{sistemaPerfilController.dataModel}"
+		var="var" paginator="true" rows="15"
+		selection="#{sistemaPerfilController.entity}"
+		rowsPerPageTemplate="9,15,30" selectionMode="single"
+		emptyMessage="Nenhum registro encontrado" reflow="true"
+		paginatorPosition="top" paginatorAlwaysVisible="true"
+		draggableColumns="false" expandableRowGroups="true"
+		sortBy="#{var.perfil.grupoPerfil.nome}">
+
+
+
+
+
+
+
+
+		<p:ajax event="contextMenu" update="result" />
+
+		<f:facet name="header">
+			<h:outputLabel value="Resultado" />
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="excel.png" width="24" />
+				<p:dataExporter type="xls" target="result" fileName="feriados" />
+			</p:commandLink>
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="pdf.png" width="24" />
+				<p:dataExporter type="pdf" target="result" fileName="feriados" />
+			</p:commandLink>
+			<p:commandLink style="float:right" ajax="false">
+				<p:graphicImage library="img" name="csv.png" width="24" />
+				<p:dataExporter type="csv" target="result" fileName="feriados" />
+			</p:commandLink>
+		</f:facet>
+
+		<!--  C O L U N A:  G R U P O   D E   U S U A R I O S   -->
+		<p:headerRow>
+			<p:column id="tipo-usuario" colspan="3">
+				<h:outputText value="#{var.perfil.tipoUsuario.label}" />
+			</p:column>
+		</p:headerRow>
+
+
+		<!--   C O L U N A:  G R U P O   P E R F I L   -->
+		<p:column id="grupo-perfil" groupRow="true"
+			headerText="Grupo do Perfil">
+			<h:outputText value="#{var.perfil.grupoPerfil.nome}" />
+		</p:column>
+
+
+		<!--   C O L U N A:  N O M E   P E R F I L  -->
+		<p:column id="perfil" headerText="Nome do Perfil">
+			<h:outputText value="#{var.perfil.nome}" />
+		</p:column>
+
+		<!--  C O L U N A:  S I T U A C A O  -->
+		<p:column id="sit" headerText="Situação">
+			<h:outputText value="#{var.situacao.label}" />
+		</p:column>
+	</p:dataTable>
+
+	<!-- ContextMenu deve sempre vir depois do datable para funcionar a seleção pelo botão direito do mouse. -->
+	<p:contextMenu for="result">
+
+		<!-- ********* BOTAO DETALHES ********* -->
+		<!-- <p:menuitem value="Detalhes"
+				actionListener="#{sistemaPerfilController.detalhes()}"
+				update=":frmFeriadoDetalhes :frmFeriadoDetalhes:pnl-detalhes">
+			</p:menuitem> -->
+
+
+		<!-- ********* BOTAO EDITAR ********* -->
+		<p:menuitem value="Editar" update="frm-pg-sistema-perfis"
+			action="#{sistemaPerfilController.editar()}" process="@this">
+		</p:menuitem>
+
+	</p:contextMenu>
+
+
+</ui:composition>

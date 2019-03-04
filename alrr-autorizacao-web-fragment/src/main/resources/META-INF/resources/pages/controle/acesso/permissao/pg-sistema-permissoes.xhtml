@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/default.xhtml">
+
+	<ui:define name="content">
+		<div class="ui-g ui-responsive">
+			<div class="ui-md-2 ui-lg-1" />
+			<div class="ui-md-8 ui-lg-10">
+				<div class="ui-g nopad">
+					<h1 class="view-titulo" id="pg-titulo">
+						<strong>Permissões de Acesso ao Sistema</strong>
+					</h1>
+				</div>
+				<p:separator />
+				<div class="ui-g nopad" style="float: right">
+					<p:outputLabel id="info" styleClass="fa fa-info-circle fa-lg fa-4x"
+						style="font-size:48px;"
+						title="Esta funcionalidade é responsável por manter as permissões de acesso a um sistema. Um Objeto pode ter várias permissões. Por exemplo, o objeto Perfil do sistema Controle de Acesso tem permissões de incluir, editar e consultar." />
+				</div>
+
+				<o:form id="frm-pg-permissoes">
+
+					<p:blockUI widgetVar="block-view" trigger="btn-pesquisar"
+						block="frm-pg-permissoes">
+					</p:blockUI>
+
+					<!--   B O T A O:   N O V A   P E R M I S S A O   -->
+					<div class="ui-g ui-fluid" style="margin-top: 25px;">
+						<div class="ui-lg-3 ui-md-3 ui-g-12 nopad-left">
+							<p:commandButton value="Nova Permissão" id="btn-nova-permissao"
+								title="Nova Permissão" action="#{sistemaPermissaoController.novo()}"
+								icon="fa fa-fw fa-file-text" process="@this"
+								update="dlg-permissao frm-permissao" styleClass="btn-lg" />
+						</div>
+					</div>
+					<br />
+					<p:spacer height="5" />
+
+					<!-- PAINEL: FILTRO DA PESQUISA -->
+					<span class="ui-g ui-fluid" style="margin-top: 30px;"><i><b>(*)</b>
+							Informe pelo menos um campo do filtro.</i></span>
+					<ui:include src="componentes/pnl-sistema-permissao-filtro.xhtml" />
+
+					<p:messages id="msgs" styleClass="msgs" />
+
+					<!-- PAINEL: RESULTADO DA PESQUISA -->
+					<p:outputPanel rendered="#{sistemaPermissaoController.entities.size()>0}">
+						<p:spacer height="35" />
+						<p:separator />
+						<p:spacer height="20" />
+						<ui:include src="componentes/pnl-sistema-permissao-resultado.xhtml" />
+					</p:outputPanel>
+					<p:spacer height="35" />
+
+				</o:form>
+			</div>
+			<div class="ui-md-2 ui-lg-1" />
+		</div>
+		<!-- DIALOGS -->
+		<!-- <ui:include src="dlg-permissoes.xhtml" /> -->
+		<ui:include src="dlg-permissao.xhtml" />
+
+		<ui:include src="dlg-objeto.xhtml" />
+		<ui:include src="dlg-modulo.xhtml" />
+		<ui:include src="dlg-operacao.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>
+

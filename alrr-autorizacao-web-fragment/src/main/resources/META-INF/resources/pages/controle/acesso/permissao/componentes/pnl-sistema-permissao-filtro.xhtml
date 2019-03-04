@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:kmdr="http://java.sun.com/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<!-- FILTRO DE PESQUISA -->
+	<p:panel header="Filtros" toggleable="true">
+		<div class="ui-fluid">
+
+			<!-- FILTRO: SISTEMA -->
+			<div class="ui-g">
+				<div class="ui-g-2 ui-lg-2 ui-md-2">
+					<p:outputLabel value="Sistema" for="sistema" />
+				</div>
+				<div class="ui-g-4 ui-lg-4 ui-md-4">
+					<p:selectOneMenu id="sistema"
+						value="#{sistemaPermissaoController.sistemaSelecionado}"
+						layout="responsive" converter="#{entityConverter}" required="true"
+						title="Selecione o sistema que deseja pesquisar.">
+						<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
+						<f:selectItems value="#{sistemaPermissaoController.sistemas}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+						<p:ajax event="change" update="modulos" process="@this"
+							listener="#{sistemaPermissaoController.handleModulos}" />
+						<p:ajax resetValues="true" />
+					</p:selectOneMenu>
+				</div>
+			</div>
+			<!-- FILTRO: MODULO-->
+			<div class="ui-g">
+				<div class="ui-g-2 ui-lg-2 ui-md-2">
+					<p:outputLabel value="Modulos" label="modulos" for="modulos" />
+				</div>
+				<div class="ui-g-4 ui-lg-4 ui-md-4">
+					<p:selectCheckboxMenu id="modulos"
+						value="#{sistemaPermissaoController.modulosSelecionados}"
+						layout="responsive" columns="1" multiple="true"
+						converter="#{entityConverter}">
+						<f:selectItems value="#{sistemaPermissaoController.modulos}"
+							var="sistema" itemValue="#{sistema}" itemLabel="#{sistema.nome}" />
+						<p:ajax resetValues="true" />
+					</p:selectCheckboxMenu>
+				</div>
+			</div>
+		</div>
+
+
+		<f:facet name="footer">
+			<p:spacer height="15" />
+			<div class="ui-g">
+				<div class="ui-lg-4 ui-md-2" />
+
+				<!-- PESQUISAR -->
+				<div class="ui-g-12 ui-lg-2 ui-md-4 ui-fluid">
+					<p:commandButton id="btn-pesquisar" value="Pesquisar"
+						styleClass="btn-lg" icon="fa fa-fw fa-search"
+						action="#{sistemaPermissaoController.pesquisar()}"
+						update="@form result msgs" />
+				</div>
+
+
+				<!-- LIMPAR -->
+				<div class="ui-g-12 ui-lg-2 ui-md-4 ui-fluid">
+					<p:commandButton id="btn-limpar" value="Limpar" styleClass="btn-lg"
+						icon="fa fa-fw fa-refresh"
+						actionListener="#{sistemaPermissaoController.limpar()}"
+						process="@this" update="@form" />
+				</div>
+
+
+				<div class="ui-lg-2 ui-md-2" />
+			</div>
+		</f:facet>
+	</p:panel>
+</ui:composition>

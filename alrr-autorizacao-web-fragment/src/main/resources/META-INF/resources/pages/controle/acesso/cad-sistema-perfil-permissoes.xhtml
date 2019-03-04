@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/components/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
+
+<ui:composition template="/default.xhtml">
+
+	<ui:define name="content">
+
+		<div class="ui-g ui-responsive">
+			<div class="ui-md-2 ui-lg-1" />
+			<div class="ui-md-8 ui-lg-10">
+				<div class="ui-g nopad">
+					<h1 class="view-titulo" id="view-titulo">
+						<strong>Permitir Acesso do Perfil do Usuário ao Sistema</strong>
+					</h1>
+				</div>
+				<p:separator styleClass="view-titulo-sep" />
+				<div class="ui-g nopad" style="float: right">
+					<p:outputLabel id="info" styleClass="fa fa-info-circle fa-lg fa-4x"
+						style="font-size:48px;"
+						title="Esta funcionalidade é responsável por manter os usuários que podem acessar o(s) sistema(s)." />
+				</div>
+
+				<o:form id="frm-pg-perfil-permissoes">
+					<p:growl id="msgs" autoUpdate="true" />
+					<p:tooltip />
+
+					<p:blockUI widgetVar="block-view" trigger="perfil btn-salvar"
+						block="frm-pg-perfil-permissoes">
+					</p:blockUI>
+
+					<p:panel styleClass="nopad">
+						<!-- TOOLBAR BOTOES: SALVAR, FECHAR E NOVO -->
+						<p:toolbar id="tb" style="margin-bottom:20px">
+
+							<f:facet name="left">
+
+								<!--  B O T A O:  S A L V A R  -->
+								<p:commandButton id="btn-salvar" title="Salvar" value="Salvar"
+									icon="fa fa-fw fa-floppy-o" validateClient="true"
+									action="#{sistemaPerfilPermissaoController.salvar()}"
+									update="msgs" />
+
+								<!--  B O T A O:  F E C H A R  -->
+								<p:button value="Fechar" id="btn-fechar"
+									icon="fa fa-fw fa-times" title="Fechar" outcome="fechar" />
+
+								<span class="ui-separator"> <span
+									class="ui-icon ui-icon-grip-dotted-vertical" />
+								</span>
+
+								<!--  B O T A O:  N O V O  -->
+								<p:commandButton id="btn-novo"
+									title="Recarrega a tela para vincular um perfil ao sistema selecionado."
+									value="Novo" icon="fa fa-fw fa-file-text" action="novo"
+									update="msgs">
+									<o:ignoreValidationFailed />
+								</p:commandButton>
+
+							</f:facet>
+
+							<!--  B O T A O:  A T A L H O S  -->
+							<f:facet name="right">
+								<p:menuButton value="Atalhos">
+									<p:menuitem value="Novo Perfil" id="btn-novo-perfil"
+										title="Cadastra um novo perfil de usuário que pode ser vinculado ao sistema selecionado."
+										action="#{perfilController.novo()}"
+										icon="fa fa-fw fa-file-text" process="@this"
+										styleClass="btn-lg"
+										rendered="#{!sistemaPerfilPermissaoController.isEditavel()}" />
+								</p:menuButton>
+							</f:facet>
+
+						</p:toolbar>
+
+						<!--  C A M P O:  S I S T E M A  -->
+						<div class="ui-g">
+							<div class="ui-g-2 ui-md-2 ui-lg-2">
+								<p:outputLabel for="sistema" value="Sistema"
+									title="Informe o sistema" />
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-4 ui-fluid">
+								<p:selectOneMenu id="sistema"
+									value="#{sistemaPerfilPermissaoController.sistemaSelecionado}"
+									layout="responsive" converter="#{entityConverter}"
+									required="true"
+									disabled="#{sistemaPerfilPermissaoController.isEditavel()}">
+									<f:selectItem itemLabel="[Selecione]" noSelectionOption="true"
+										itemDisabled="true" />
+									<f:selectItems value="#{sistemaPerfilController.sistemas}"
+										var="sistema" itemValue="#{sistema}"
+										itemLabel="#{sistema.nome}" />
+									<p:ajax event="itemSelect" process="@this"
+										listener="#{sistemaPerfilPermissaoController.handleSistema}"
+										update="tipo-usuario perfil sit permissoes" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+
+						<!--  C A M P O:  T I P O   D O   U S U Á R I O  -->
+						<div class="ui-g">
+							<div class="ui-g-2 ui-md-2 ui-lg-2">
+								<p:outputLabel for="tipo-usuario" value="Tipo do Usuário"
+									title="Define qual o grupo de usuários que fará parte do acesso as permissões do perfil escolhido." />
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-4 ui-fluid">
+								<p:selectOneMenu id="tipo-usuario"
+									value="#{sistemaPerfilPermissaoController.tipoDoUsuarioSelecionado}"
+									layout="responsive" columns="1"
+									converter="omnifaces.GenericEnumConverter" required="true"
+									disabled="#{sistemaPerfilPermissaoController.isEditavel() || sistemaPerfilPermissaoController.sistemaSelecionado == null}">
+									<f:selectItem noSelectionOption="true" itemLabel="[Selecione]"
+										itemDisabled="true" />
+									<f:selectItems
+										value="#{sistemaPerfilController.tiposDeUsuarios}" var="tipo"
+										itemValue="#{tipo}" itemLabel="#{tipo.label}"
+										itemDescription="#{tipo.descricao}" />
+									<p:ajax event="itemSelect" process="@this" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+
+						<!-- CAMPO:  S I S T E M A   P E R F I L:  JÁ EXISTE -->
+						<h:panelGroup
+							rendered="#{sistemaPerfilPermissaoController.entity.id >0}">
+							<div class="ui-g">
+								<div class="ui-g-2 ui-md-2 ui-lg-2">
+									<p:outputLabel value="Perfil" for="sistema-perfil" />
+								</div>
+								<div class="ui-g-12 ui-md-4 ui-lg-4 ui-fluid">
+									<p:autoComplete id="sistema-perfil"
+										value="#{sistemaPerfilPermissaoController.entity}"
+										dropdown="true" required="true" converter="#{entityConverter}"
+										emptyMessage="Nenhum registro encontrado" var="sistemaPerfil"
+										itemValue="#{sistemaPerfil}"
+										itemLabel="#{sistemaPerfil.perfil.nome}"
+										completeMethod="#{sistemaPerfilPermissaoController.completeSistemaPerfisPorTipoUsuario}"
+										groupBy="#{sistemaPerfilPermissaoController.getPerfisPorGrupo(sistemaPerfil.perfil)}"
+										disabled="#{sistemaPerfilPermissaoController.isEditavel()}">
+										<p:ajax event="itemSelect" process="@this"
+											listener="#{sistemaPerfilPermissaoController.handleSistemaPerfil}"
+											update="permissoes sit" />
+									</p:autoComplete>
+								</div>
+							</div>
+						</h:panelGroup>
+
+
+						<!--   P E R F I L:  N O V O   S I S T E M A   P E R F I L  -->
+						<h:panelGroup
+							rendered="#{sistemaPerfilPermissaoController.entity.id == null}">
+							<div class="ui-g">
+								<div class="ui-g-2 ui-md-2 ui-lg-2">
+									<p:outputLabel value="Perfil" for="perfil" />
+								</div>
+								<div class="ui-g-12 ui-md-4 ui-lg-4 ui-fluid">
+									<p:autoComplete id="perfil"
+										value="#{sistemaPerfilPermissaoController.perfilSelecionado}"
+										dropdown="true" required="true" converter="#{entityConverter}"
+										emptyMessage="Nenhum registro encontrado" var="perfil"
+										disabled="#{sistemaPerfilPermissaoController.sistemaSelecionado == null}"
+										itemValue="#{perfil}" itemLabel="#{perfil.nome}"
+										completeMethod="#{sistemaPerfilPermissaoController.completePerfisPorTipoUsuario}"
+										groupBy="#{sistemaPerfilPermissaoController.getPerfisPorGrupo(perfil)}">
+										<p:ajax event="itemSelect" process="@this" />
+									</p:autoComplete>
+								</div>
+							</div>
+						</h:panelGroup>
+
+
+						<!--  C A M P O:  S I T U A Ç Ã O  -->
+						<div class="ui-g">
+							<div class="ui-g-2 ui-md-2 ui-lg-2">
+								<p:outputLabel value="Situação" for="sit" />
+							</div>
+							<div class="ui-g-12 ui-md-4 ui-lg-4 ui-fluid">
+								<p:selectOneButton id="sit" label="Situação" required="true"
+									value="#{sistemaPerfilPermissaoController.entity.situacao}"
+									converter="omnifaces.GenericEnumConverter">
+									<f:selectItems value="#{commonsEnumFactory.statusType}"
+										var="sit" itemValue="#{sit}" itemLabel="#{sit.label}" />
+								</p:selectOneButton>
+								<p:message for="sit" display="tooltip" />
+							</div>
+						</div>
+
+						<p:separator />
+
+						<span class="ui-g ui-fluid" style="margin-top: 30px;"><i><b>(*)</b>
+								Marque as permissões para o perfil do sistema selecionado.</i></span>
+						<div class="ui-g" id="pnl-permissoes">
+							<p:treeTable id="permissoes"
+								value="#{sistemaPerfilPermissaoController.rootNode}"
+								var="permissao"
+								selection="#{sistemaPerfilPermissaoController.permissoesSelecionadas}"
+								emptyMessage="Nenhum registro encontrado" reflow="true"
+								selectionMode="checkbox">
+								<f:facet name="header">
+            					Lista de Permissões
+        					</f:facet>
+
+
+								<!-- COLUNA: NOME -->
+								<p:column id="modulo" headerText="Permissâo">
+									<h:outputText value="#{permissao.nome}" />
+								</p:column>
+
+								<!-- COLUNA: DESCRICAO -->
+								<p:column id="desc" headerText="Descrição">
+									<h:outputText value="#{permissao.descricao}" />
+								</p:column>
+
+							</p:treeTable>
+						</div>
+
+					</p:panel>
+				</o:form>
+			</div>
+			<div class="ui-md-2 ui-lg-1" />
+		</div>
+		<ui:include src="perfil/dlg-grupo.xhtml" />
+		<ui:include src="perfil/dlg-perfil.xhtml" />
+
+	</ui:define>
+</ui:composition>
+</html>
+
