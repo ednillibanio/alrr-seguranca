@@ -1,81 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
+<!--
+/****************************************************************************************
+* ALE-RR Licença																		*
+* Copyright (C) 2018, ALE-RR															*
+* Boa Vista, RR - Brasil																*
+* Todos os direitos reservados.															*
+* 																						*
+* Este programa é propriedade da Assembleia Legislativa do Estado de Roraima e 			*
+* não é permitida a distribuição, alteração ou cópia da mesma sem prévia autoriazação.	*
+*																						*
+*																						*
+*****************************************************************************************
+* Autor:  Ednil Libanio da Costa Junior													*
+* Versão: 1.0.0 																		*
+****************************************************************************************/
+-->
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:al="http://xmlns.jcp.org/jsf/composite/componentes/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:al="http://java.sun.com/jsf/composite/components/commons"
-	lang="pt-br">
+	xmlns:alcore="http://al.rr.leg.br/facelets/core"
+	xmlns:alcommons="http://al.rr.leg.br/facelets/commons"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:ph="http://xmlns.jcp.org/jsf/passthrough" lang="pt-br">
 
-<p:dialog id="dlg-grupo" widgetVar="dlg-grupo" showEffect="clip"
-	hideEffect="clip" closeOnEscape="true" showHeader="false"
-	responsive="true" modal="true" resizable="false" closable="false"
-	appendTo="@(body)" styleClass="ui-fluid ui-md-8 nopad"
-	fitViewport="true">
-	<h:form id="frm-grupo">
-		<p:growl id="msgs-grupo" />
-		<p:tooltip />
+<ui:composition template="/dialog.xhtml">
 
+	<!--   P A R A M E T R O S   D E   C O N F I G U R A Ç Ã O   -->
+	<!--   D O   T E M P L A T E:   D I A L O G   -->
+	<ui:param name="dlgid" value="dlg-grupo" />
+	<ui:param name="widgetVar" value="dlg-grupo" />
+	<ui:param name="frmid" value="frm-grupo" />
+	<ui:param name="panelheader" value="Cadastro de Grupo de Perfil" />
+	<ui:param name="columns" value="1" />
 
-		<p:panel header="Grupo" id="pnl-grupo">
+	<ui:define name="form-dialog">
+		<p:defaultCommand target="frm-grupo:btn-salvar" />
+	</ui:define>
 
-
-			<p:panelGrid columns="1" cellpadding="10"
-				styleClass="ui-panelgrid-blank" layout="grid">
-
-
-				<!-- NOME DO MODULO -->
-				<h:panelGroup>
-					<p:outputLabel for="nome" value="Nome"
-						title="Nome do Grupo do Perfil" />
-					<p:inputText id="nome" value="#{grupoController.entity.nome}"
-						title="Informe o nome do grupo do perfil. Por exemplo, Superintendência Legislativa."
-						required="true" />
-					<p:message for="nome" display="tooltip" />
-				</h:panelGroup>
+	<!-- ####################################### -->
+	<!--   C O N T E Ú D O   D O   D I A L O G   -->
+	<!-- ####################################### -->
+	<ui:define name="dialog-content">
 
 
-				<!-- SITUACAO -->
-				<h:panelGroup>
-					<p:outputLabel value="Situação" for="sit"
-						title="Situação do Grupo do Perfil" />
-					<p:selectOneButton id="sit" label="Situação" required="true"
-						value="#{grupoController.entity.situacao}"
-						converter="omnifaces.GenericEnumConverter">
-						<f:selectItems value="#{commonsEnumFactory.statusType}" var="sit"
-							itemValue="#{sit}" itemLabel="#{sit.label}" />
-					</p:selectOneButton>
-					<p:message for="sit" display="tooltip" />
-				</h:panelGroup>
+		<!--   C A M P O:   N O M E   -->
+		<al:campo value="Nome" for="nome">
+			<div class="ui-inputgroup">
+
+				<p:inputText id="nome" title="Nome do Módulo" label="Nome"
+					required="true" value="#{grupoPerfilController.entity.nome}">
+					<f:validateLength minimum="3" maximum="150" for="nome" />
+				</p:inputText>
+				<alcore:botao-capitalizar
+					actionListener="#{grupoPerfilController.capitalizeNome()}"
+					update="nome" process="nome @this" />
+
+			</div>
+		</al:campo>
 
 
-				<!-- DESCRIÇÃO -->
-				<h:panelGroup>
-					<p:outputLabel for="descricao" value="Descrição" />
-					<p:inputTextarea rows="3" id="descricao"
-						value="#{grupoController.entity.descricao}" />
-					<p:message for="descricao" display="tooltip" />
-				</h:panelGroup>
+		<!--   C A M P O:  S I T U A Ç Ã O  -->
+		<al:campo value="Situação" for="situacao">
+			<al:select-situacao-button id="situacao"
+				value="#{grupoPerfilController.entity.situacao}" required="true" />
+		</al:campo>
 
-			</p:panelGrid>
-			<!-- BOTOES -->
-			<f:facet name="footer">
-				<p:panelGrid columns="2" layout="grid"
-					styleClass="ui-panelgrid-blank">
-					<p:commandButton value="Fechar" id="btn-fechar"
-						icon="fa fa-fw fa-times" title="Fechar"
-						oncomplete="PF('dlg-grupo').hide()" process="@this" />
-					<p:commandButton id="btn-salvar" value="Salvar" title="Salvar"
-						icon="fa fa-fw fa-floppy-o" action="#{grupoController.salvar()}"
-						validateClient="true" update="frm-grupo msgs-grupo"
-						process="frm-grupo" />
 
-				</p:panelGrid>
-			</f:facet>
-		</p:panel>
-	</h:form>
+		<!--   C A M P O:  D E S C R I Ç Ã O  -->
+		<al:campo vvalue="Descrição" for="desc">
+			<p:inputTextarea id="desc"
+				value="#{grupoPerfilController.entity.descricao}" />
+		</al:campo>
 
-</p:dialog>
+
+	</ui:define>
+
+
+	<!-- ################################### -->
+	<!--   R O D A P É   D O   D I A L O G   -->
+	<!-- ################################### -->
+
+	<!--   B O T Ã O:   F E C H A R   -->
+	<ui:define name="btn-esquerda">
+		<alcore:botao-fechar id="btnfechar"
+			oncomplete="PF('dlg-grupo').hide()" immediate="true" />
+	</ui:define>
+
+	<!--   B O T Ã O:   S A L V A R   -->
+	<ui:define name="btn-direita">
+		<alcore:botao-salvar id="btnsalvar"
+			action="#{grupoPerfilController.salvar()}" validateClient="true"
+			update="frm-grupo @(.result)" process="@form" />
+	</ui:define>
+
+</ui:composition>
 </html>

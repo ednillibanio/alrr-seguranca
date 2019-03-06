@@ -86,18 +86,12 @@
 		</al:campo>
 
 		<!--  C A M P O:  S I T U A Ç Ã O  -->
-		<o:importConstants type="br.leg.rr.al.core.domain.StatusType" />
 		<al:campo value="Situação" for="situacao">
-			<p:selectOneButton id="situacao"
-				value="#{objetoController.entity.situacao}" required="true">
-				<f:selectItem itemValue="#{StatusType.ATIVO}"
-					itemLabel="#{StatusType.ATIVO.label}" />
-				<f:selectItem itemLabel="#{StatusType.INATIVO.label}"
-					itemValue="#{StatusType.INATIVO}" />
-			</p:selectOneButton>
+			<al:select-situacao-button id="situacao"
+				value="#{objetoController.entity.situacao}" required="true" />
 		</al:campo>
 
-		<!--  C A M P O:  D E S C R I Ç  Ã O  -->
+
 		<!--   C A M P O:  D E S C R I Ç Ã O  -->
 		<al:campo vvalue="Descrição" for="desc">
 			<p:inputTextarea id="desc"
@@ -125,6 +119,6 @@
 			action="#{objetoController.salvar()}" validateClient="true"
 			update="frm-objeto @(.result)" process="@form" />
 	</ui:define>
-
+	
 </ui:composition>
 </html>

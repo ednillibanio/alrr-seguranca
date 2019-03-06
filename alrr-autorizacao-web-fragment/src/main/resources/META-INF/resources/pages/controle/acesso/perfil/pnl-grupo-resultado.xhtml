@@ -29,30 +29,23 @@
 
 
 	<!--   R E S U L T A D O   D A   P E S Q U I S A   -->
-	<al:datatable-resultado-pesquisa id="dt-perfils"
-		controller="#{perfilController}" filename="perfils"
-		dataTableRendered="#{perfilController.entities.size()>0}" tabindex="5">
+	<al:datatable-resultado-pesquisa id="dt-grupos"
+		controller="#{grupoPerfilController}" filename="grupos"
+		dataTableRendered="#{grupoPerfilController.entities.size()>0}" tabindex="5">
 
 
 		<!--  N O M E  -->
-		<p:column id="nome" sortBy="#{var.nome}" headerText="perfil"
-			width="30%">
+		<p:column id="nome" sortBy="#{var.nome}" headerText="Nome" width="30%">
 			<h:outputText value="#{var.nome}" />
 		</p:column> -->
 
-		<!--  G R U P O  -->
-		<p:column id="modulo" sortBy="#{var.grupoPerfil.nome}" headerText="Grupo"
-			width="20%">
-			<h:outputText value="#{var.grupoPerfil.nome}" />
-		</p:column>
-
 		<!--  D E S C R I Ç Ã O  -->
-		<p:column id="desc" headerText="Descrição" width="40%">
+		<p:column id="desc" headerText="Descrição" width="60%">
 			<h:outputText value="#{var.descricao}" />
 		</p:column>
 
 		<!--  S I T U A Ç Ã O  -->
-		<p:column id="sit" sortBy="#{var.situacao}" headerText="Situação">
+		<p:column id="sit" headerText="Situação" width="10%">
 			<h:outputText value="#{var.situacao.label}" />
 		</p:column>
 
@@ -63,24 +56,24 @@
 				beforeShow="return true;">
 
 				<!-- *********   M E N U   D E T A L H E S   ********* -->
-				<alcore:menuitem-detalhes update="frm-perfil-detalhes"
-					action="#{perfilController.detalhes()}" />
+				<alcore:menuitem-detalhes update="frm-grupo-detalhes"
+					action="#{grupoPerfilController.detalhes()}" />
 
 				<!-- *********   M E N U   E D I T A R   ********* -->
-				<alcore:menuitem-editar update="frm-perfil"
-					action="#{perfilController.editar()}" process="@this" />
+				<alcore:menuitem-editar update="frm-grupo"
+					action="#{grupoPerfilController.editar()}" process="@this" />
 
 
 				<!-- *********   M E N U   D E S A T I V A R   ********* -->
 				<alcore:menuitem-desativar update="@(.result)"
-					rendered="#{perfilController.entity.situacao eq 'ATIVO' }"
-					action="#{perfilController.desativar()}" process="@this" />
+					rendered="#{grupoPerfilController.entity.situacao eq 'ATIVO' }"
+					action="#{grupoPerfilController.desativar()}" process="@this" />
 
 
 				<!-- *********   M E N U   A T I V A R   ********* -->
 				<alcore:menuitem-ativar update="@(.result)"
-					rendered="#{perfilController.entity.situacao eq 'INATIVO' }"
-					action="#{perfilController.ativar()}" process="@this" />
+					rendered="#{grupoPerfilController.entity.situacao eq 'INATIVO' }"
+					action="#{grupoPerfilController.ativar()}" process="@this" />
 
 			</p:contextMenu>
 

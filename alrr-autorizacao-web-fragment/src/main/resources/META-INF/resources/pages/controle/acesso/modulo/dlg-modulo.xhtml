@@ -46,9 +46,6 @@
 	<!-- ####################################### -->
 	<ui:define name="dialog-content">
 
-		<o:importConstants type="br.leg.rr.al.core.domain.StatusType" />
-
-
 		<!--   C A M P O:   N O M E   -->
 		<al:campo value="Nome" for="nome">
 			<div class="ui-inputgroup">
@@ -67,13 +64,8 @@
 
 		<!--   C A M P O:  S I T U A Ç Ã O  -->
 		<al:campo value="Situação" for="situacao">
-			<p:selectOneButton id="situacao"
-				value="#{moduloController.entity.situacao}" required="true">
-				<f:selectItem itemValue="#{StatusType.ATIVO}"
-					itemLabel="#{StatusType.ATIVO.label}" />
-				<f:selectItem itemLabel="#{StatusType.INATIVO.label}"
-					itemValue="#{StatusType.INATIVO}" />
-			</p:selectOneButton>
+			<al:select-situacao-button id="situacao"
+				value="#{moduloController.entity.situacao}" required="true" />
 		</al:campo>
 
 		<!--   C A M P O:  D E S C R I Ç Ã O  -->

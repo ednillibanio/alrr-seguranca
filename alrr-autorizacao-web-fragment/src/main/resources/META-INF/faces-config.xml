@@ -30,6 +30,11 @@
 			<to-view-id>/pages/controle/acesso/perfil/pg-perfis.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>pg-grupos-perfil</from-outcome>
+			<to-view-id>/pages/controle/acesso/perfil/pg-grupos.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 	</navigation-rule>
 	<application>

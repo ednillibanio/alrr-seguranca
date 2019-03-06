@@ -37,17 +37,17 @@
 	</ui:define>
 
 	<ui:define name="title">
-	Pesquisar Perfis
+	Pesquisar Operações
 	</ui:define>
 
-	<!-- FORMULÁRIO DE PESQUISA DE perfis -->
+	<!-- FORMULÁRIO DE PESQUISA DE operacoes -->
 	<ui:define name="content">
 
 
-		<o:form id="frm-pg-perfis">
+		<o:form id="frm-pg-operacoes">
 			<div class="card filtro">
 				<al:header-content>
-					<ui:include src="perfil-manual.xhtml" />
+					<ui:include src="operacao-manual.xhtml" />
 				</al:header-content>
 
 				<p:defaultCommand target="btn-pesquisar" />
@@ -64,9 +64,9 @@
 				<div class="ui-g ui-fluid">
 					<div class="ui-g-12 ui-md-4 ui-lg-3 ui-xl-2">
 
-						<!--  B O T Ã O:   N O V O   P E R F I L   -->
-						<alcore:botao-novo id="btn-novo-perfil" value="Novo Perfil"
-							action="#{perfilController.novo()}" update="dlg-perfil"
+						<!--  B O T Ã O:   N O V O   O B J E T O   -->
+						<alcore:botao-novo id="btn-nova-operacao" value="Nova Operacao"
+							action="#{operacaoController.novo()}" update="dlg-operacao"
 							process="@this" />
 					</div>
 
@@ -75,18 +75,19 @@
 
 				<!--  P A I N E L:   F I L T R O   D A   P E S Q U I S A  -->
 				<al:filtro-obrigatorio-informativo />
-				<ui:include src="pnl-perfil-filtro.xhtml" />
+				<ui:include src="pnl-operacao-filtro.xhtml" />
 			</div>
 
 			<!--  P A I N E L:   R E S U L T A D O   D A   P E S Q U I S A  -->
-			<ui:include src="pnl-perfil-resultado.xhtml" />
+			<ui:include src="pnl-operacao-resultado.xhtml" />
 
 		</o:form>
 
 		<!--  D I A L O G S  -->
-		<ui:include src="dlg-perfil.xhtml" />
-		<ui:include src="dlg-grupo.xhtml" />
-		<ui:include src="dlg-perfil-detalhes.xhtml" />
+		<ui:include src="dlg-operacao.xhtml" />
+		<ui:include src="../objeto/dlg-objeto.xhtml" />
+		<ui:include src="../modulo/dlg-modulo.xhtml" />
+		<ui:include src="dlg-operacao-detalhes.xhtml" />
 
 
 	</ui:define>

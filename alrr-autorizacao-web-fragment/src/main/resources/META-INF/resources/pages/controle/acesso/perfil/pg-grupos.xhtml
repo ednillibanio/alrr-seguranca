@@ -37,17 +37,17 @@
 	</ui:define>
 
 	<ui:define name="title">
-	Pesquisar Perfis
+	Pesquisar Grupos de Perfil
 	</ui:define>
 
-	<!-- FORMULÁRIO DE PESQUISA DE perfis -->
+	<!-- FORMULÁRIO DE PESQUISA DE GRUPOS DE PERFIL -->
 	<ui:define name="content">
 
 
-		<o:form id="frm-pg-perfis">
+		<o:form id="frm-pg-grupos">
 			<div class="card filtro">
 				<al:header-content>
-					<ui:include src="perfil-manual.xhtml" />
+					<ui:include src="grupo-manual.xhtml" />
 				</al:header-content>
 
 				<p:defaultCommand target="btn-pesquisar" />
@@ -64,9 +64,9 @@
 				<div class="ui-g ui-fluid">
 					<div class="ui-g-12 ui-md-4 ui-lg-3 ui-xl-2">
 
-						<!--  B O T Ã O:   N O V O   P E R F I L   -->
-						<alcore:botao-novo id="btn-novo-perfil" value="Novo Perfil"
-							action="#{perfilController.novo()}" update="dlg-perfil"
+						<!--  B O T Ã O:   N O V O   G R UP O   D E   P E R F I L   -->
+						<alcore:botao-novo id="btn-novo-grupo" value="Novo Grupo"
+							action="#{grupoPerfilController.novo()}" update="dlg-grupo"
 							process="@this" />
 					</div>
 
@@ -75,18 +75,17 @@
 
 				<!--  P A I N E L:   F I L T R O   D A   P E S Q U I S A  -->
 				<al:filtro-obrigatorio-informativo />
-				<ui:include src="pnl-perfil-filtro.xhtml" />
+				<ui:include src="pnl-grupo-filtro.xhtml" />
 			</div>
 
 			<!--  P A I N E L:   R E S U L T A D O   D A   P E S Q U I S A  -->
-			<ui:include src="pnl-perfil-resultado.xhtml" />
+			<ui:include src="pnl-grupo-resultado.xhtml" />
 
 		</o:form>
 
 		<!--  D I A L O G S  -->
-		<ui:include src="dlg-perfil.xhtml" />
 		<ui:include src="dlg-grupo.xhtml" />
-		<ui:include src="dlg-perfil-detalhes.xhtml" />
+		<ui:include src="dlg-grupo-detalhes.xhtml" />
 
 
 	</ui:define>

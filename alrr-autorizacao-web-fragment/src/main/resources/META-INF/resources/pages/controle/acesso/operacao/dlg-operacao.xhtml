@@ -29,16 +29,22 @@
 
 <ui:composition template="/dialog.xhtml">
 
+	<style type="text/css">
+.objeto {
+	
+}
+</style>
+
 	<!--   P A R A M E T R O S   D E   C O N F I G U R A Ç Ã O   -->
 	<!--   D O   T E M P L A T E:   D I A L O G   -->
-	<ui:param name="dlgid" value="dlg-perfil" />
-	<ui:param name="widgetVar" value="dlg-perfil" />
-	<ui:param name="frmid" value="frm-perfil" />
-	<ui:param name="panelheader" value="Cadastro de Perfil" />
+	<ui:param name="dlgid" value="dlg-operacao" />
+	<ui:param name="widgetVar" value="dlg-operacao" />
+	<ui:param name="frmid" value="frm-operacao" />
+	<ui:param name="panelheader" value="Cadastro de Operação" />
 	<ui:param name="columns" value="1" />
 
 	<ui:define name="form-dialog">
-		<p:defaultCommand target="frm-perfil:btn-salvar" />
+		<p:defaultCommand target="frm-operacao:btn-salvar" />
 	</ui:define>
 
 	<!-- ####################################### -->
@@ -47,56 +53,57 @@
 	<ui:define name="dialog-content">
 
 
-		<!--  C A M P O:  G R U P O   D O   P E R F I L   -->
-		<al:campo value="Grupo" for="grupo" title="Nome do Grupo">
+		<!--  C A M P O:  N O M  E   -->
+		<al:campo for="nome" value="Nome" title="Nome da operação">
 			<div class="ui-inputgroup">
-				<p:selectOneMenu id="grupo" title="Selecione o grupo do perfil"
-					value="#{perfilController.entity.grupoPerfil}" layout="responsive"
-					converter="#{entityConverter}" required="false">
-					<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
-					<f:selectItems value="#{perfilController.gruposAtivos}" var="grupo"
-						itemValue="#{grupo}" itemLabel="#{grupo.nome}" />
-					<p:ajax resetValues="true" />
-				</p:selectOneMenu>
-				<!-- B O T Ã O:  R E F R E S H -->
-				<p:commandButton id="btn-atualizar"
-					title="#{core['btn.atualizar.title']}"
-					icon="#{core['btn.atualizar.icon']}"
-					actionListener="#{perfilController.carregarGruposAtivos()}"
-					process="@this" update="grupo" />
-
-				<!-- B O T Ã O:  N O V O   G R U P O -->
-				<alcore:botao-novo update="dlg-grupo"
-					action="#{grupoPerfilController.novo()}" process="@this" />
-
-
-			</div>
-		</al:campo>
-
-		<!--   C A M P O:  N O M  E   D O   P E R F I L   -->
-		<al:campo for="nome" value="Nome" title="Nome do perfil">
-			<div class="ui-inputgroup">
-				<p:inputText id="nome" value="#{perfilController.entity.nome}"
+				<p:inputText id="nome" value="#{operacaoController.entity.nome}"
 					required="true" />
 				<alcore:botao-capitalizar
-					actionListener="#{perfilController.capitalizeNome()}" update="nome"
-					process="nome @this" />
+					actionListener="#{operacaoController.capitalizeNome()}"
+					update="nome" process="nome @this" />
 			</div>
 		</al:campo>
 
-		<!--   C A M P O:  S I T U A Ç Ã O   -->
+		<!--  C A M P O:  S I T U A Ç Ã O  -->
+		<o:importConstants type="br.leg.rr.al.core.domain.StatusType" />
 		<al:campo value="Situação" for="situacao">
 			<al:select-situacao-button id="situacao"
-				value="#{perfilController.entity.situacao}" required="true" />
+				value="#{operacaoController.entity.situacao}" required="true" />
 		</al:campo>
 
 
-		<!--   C A M P O:  D E S C R I Ç Ã O   -->
-		<al:campo vvalue="Descrição" for="desc">
-			<p:inputTextarea id="desc"
-				value="#{perfilController.entity.descricao}" />
+		<!--  C A M P O:  M O D U L O  -->
+		<al:campo value="Módulo" for="modulo" title="Módulo">
+			<p:selectOneMenu id="modulo"
+				title="Selecione o módulo para escolher o objeto"
+				value="#{operacaoController.modulo}" layout="responsive"
+				converter="#{entityConverter}">
+				<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
+				<f:selectItems value="#{operacaoController.modulosAtivos}"
+					var="modulo" itemValue="#{modulo}" itemLabel="#{modulo.nome}" />
+				<p:ajax resetValues="true" />
+				<p:ajax event="change"
+					listener="#{operacaoController.onModuloChange}" process="@this"
+					update="@(.objeto)" />
+			</p:selectOneMenu>
 		</al:campo>
 
+		<al:campo value="Objeto" for="objeto" title="Objeto" id="campoobjeto">
+			<div class="ui-inputgroup">
+				<p:selectOneMenu id="objeto" title="Selecione o objeto da operação"
+					value="#{operacaoController.entity.objeto}" layout="responsive"
+					converter="#{entityConverter}" styleClass="objeto">
+					<f:selectItem itemLabel="[Selecione]" noSelectionOption="true" />
+					<f:selectItems value="#{operacaoController.objetosAtivos}"
+						var="objeto" itemValue="#{objeto}" itemLabel="#{objeto.nome}" />
+					<p:ajax resetValues="true" />
+				</p:selectOneMenu>
+
+				<!-- B O T Ã O:  N O V O   M O D U L O -->
+				<alcore:botao-novo update="dlg-objeto"
+					action="#{objetoController.novo()}" process="@this" />
+			</div>
+		</al:campo>
 
 
 	</ui:define>
@@ -109,14 +116,14 @@
 	<!--   B O T Ã O:   F E C H A R   -->
 	<ui:define name="btn-esquerda">
 		<alcore:botao-fechar id="btnfechar"
-			oncomplete="PF('dlg-perfil').hide()" immediate="true" />
+			oncomplete="PF('dlg-operacao').hide()" immediate="true" />
 	</ui:define>
 
 	<!--   B O T Ã O:   S A L V A R   -->
 	<ui:define name="btn-direita">
 		<alcore:botao-salvar id="btnsalvar"
-			action="#{perfilController.salvar()}" validateClient="true"
-			update="frm-perfil @(.result)" process="@form" />
+			action="#{operacaoController.salvar()}" validateClient="true"
+			update="frm-operacao @(.result)" process="@form" />
 	</ui:define>
 
 </ui:composition>

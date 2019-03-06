@@ -33,38 +33,28 @@
 
 
 		<!-- Esse componente deve vir sempre antes dos filtros para que a validação funcione. -->
-		<alcore:validateOneOrMore components="nome modulos sit:sit" />
+		<alcore:validateOneOrMore components="nome sit" />
 
 
 		<p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank"
 			id="pnl-filtro"
 			columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
 
-
-			<!--   F I L T R O:  M Ó D U L O   -->
-			<p:outputLabel value="Módulos" for="modulos" />
-			<p:selectCheckboxMenu id="modulos"
-				title="Filtra os objetos pelos módulos selecionados"
-				value="#{objetoController.modulosSelecionados}" layout="responsive"
-				columns="1" multiple="true" converter="#{entityConverter}"
-				tabindex="1">
-				<f:selectItems value="#{objetoController.modulos}" var="modulo"
-					itemValue="#{modulo}" itemLabel="#{modulo.nome}" />
-				<p:ajax resetValues="true" />
-			</p:selectCheckboxMenu>
-
-
 			<!--   F I L T R O:  N O M E   -->
 			<p:outputLabel value="Nome" for="nome" />
-			<p:inputText id="nome" label="Nome" value="#{objetoController.nome}"
-				tabindex="2"
-				title="Filtra os objetos que satisfaçam o nome informado." />
-
+			<p:inputText id="nome" label="Nome" value="#{grupoPerfilController.nome}"
+				tabindex="1"
+				title="Filtra os grupos que satisfaçam o nome informado." />
 
 			<!--   F I L T R O:   S I T U A Ç Ã O   -->
 			<p:outputLabel value="Situação" for="sit" />
-			<al:select-situacao-menu value="#{objetoController.situacao}"
-				id="sit" tabindex="3" />
+			<p:selectOneMenu value="#{grupoPerfilController.situacao}" id="sit"
+				converter="omnifaces.GenericEnumConverter" tabindex="2">
+				<f:selectItem noSelectionOption="true" itemLabel="[Selecione]"
+					itemValue="" />
+				<f:selectItems value="#{autorizacaoEnumFactory.statusType}"
+					var="_sit" itemValue="#{_sit}" itemLabel="#{_sit.label}" />
+			</p:selectOneMenu>
 		</p:panelGrid>
 
 	</ui:define>
@@ -73,14 +63,14 @@
 	<!--   B O T Ã O:   L I M P A R   -->
 	<ui:define name="btn-limpar">
 		<alcore:botao-limpar id="btnlimpar" tabindex="4"
-			action="#{objetoController.limpar()}" process="@this" update="@form" />
+			action="#{grupoPerfilController.limpar()}" process="@this" update="@form" />
 	</ui:define>
 
 	<!--   B O T Ã O:   P E S Q U I S A R   -->
 	<ui:define name="btn-pesquisar">
 		<alcore:botao-pesquisar id="btnpesquisar" tabindex="3"
-			action="#{objetoController.pesquisar()}"
-			update="frm-pg-objetos @(.result) @(.msgs)" />
+			action="#{grupoPerfilController.pesquisar()}"
+			update="frm-pg-grupos @(.result) @(.msgs)" />
 	</ui:define>
 
 

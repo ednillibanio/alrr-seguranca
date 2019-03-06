@@ -14,22 +14,22 @@ import org.slf4j.LoggerFactory;
 import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.utils.StringHelper;
 import br.leg.rr.al.core.web.controller.status.DialogControllerEntityStatus;
-import br.leg.rr.al.seguranca.autorizacao.ejb.ModuloLocal;
-import br.leg.rr.al.seguranca.autorizacao.jpa.Modulo;
+import br.leg.rr.al.seguranca.autorizacao.ejb.GrupoPerfilLocal;
+import br.leg.rr.al.seguranca.autorizacao.jpa.GrupoPerfil;
 
 @Named
 @ViewScoped
-public class ModuloController extends DialogControllerEntityStatus<Modulo, Integer> {
+public class GrupoPerfilController extends DialogControllerEntityStatus<GrupoPerfil, Integer> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7882112613545512515L;
 
-	Logger logger = LoggerFactory.getLogger(ModuloController.class);
+	Logger logger = LoggerFactory.getLogger(GrupoPerfilController.class);
 
 	@EJB
-	private ModuloLocal bean;
+	private GrupoPerfilLocal bean;
 
 	// ************ FILTROS DE PESQUISA ************//
 	/**
@@ -44,18 +44,18 @@ public class ModuloController extends DialogControllerEntityStatus<Modulo, Integ
 	public void init() {
 		setBean(bean);
 
-		jaExisteMsg = "modulo já existe.";
-		setNovoDialogName("dlg-modulo");
-		setEditarDialogName("dlg-modulo");
-		setDetalhesDialogName("dlg-modulo-detalhes");
+		jaExisteMsg = "grupo já existe.";
+		setNovoDialogName("dlg-grupo");
+		setEditarDialogName("dlg-grupo");
+		setDetalhesDialogName("dlg-grupo-detalhes");
 	}
 
 	@Override
 	public void prePesquisar() {
 
 		Map<String, Object> filtros = new HashMap<String, Object>();
-		filtros.put(ModuloLocal.PESQUISAR_PARAM_NOME, nome);
-		filtros.put(ModuloLocal.PESQUISAR_PARAM_SITUACAO, situacao);
+		filtros.put(GrupoPerfilLocal.PESQUISAR_PARAM_NOME, nome);
+		filtros.put(GrupoPerfilLocal.PESQUISAR_PARAM_SITUACAO, situacao);
 
 		setFiltros(filtros);
 	}

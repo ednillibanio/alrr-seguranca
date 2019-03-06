@@ -41,30 +41,42 @@
 			columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
 
 
-			<!--   F I L T R O:  M Ó D U L O   -->
+			<!--   F I L T R O:  M Ó D U L O S   -->
 			<p:outputLabel value="Módulos" for="modulos" />
 			<p:selectCheckboxMenu id="modulos"
-				title="Filtra os objetos pelos módulos selecionados"
-				value="#{objetoController.modulosSelecionados}" layout="responsive"
-				columns="1" multiple="true" converter="#{entityConverter}"
-				tabindex="1">
-				<f:selectItems value="#{objetoController.modulos}" var="modulo"
+				title="Filtra os operacoes pelos módulos selecionados"
+				value="#{operacaoController.modulosSelecionados}"
+				layout="responsive" columns="1" multiple="true"
+				converter="#{entityConverter}" tabindex="1">
+				<f:selectItems value="#{operacaoController.modulos}" var="modulo"
 					itemValue="#{modulo}" itemLabel="#{modulo.nome}" />
 				<p:ajax resetValues="true" />
 			</p:selectCheckboxMenu>
 
+			<p:outputLabel value="Objetos" for="objetos" />
+			<p:autoComplete id="objetos" label="Objeto" value="#{operacaoController.objetosSelecionados}"
+				multiple="true"
+				completeMethod="#{objetoAutoCompleteController.completarPorNome}"
+				var="objeto"
+				itemLabel="#{objeto.nome.concat(', ').concat(objeto.modulo.nome)}"
+				itemValue="#{objeto}" converter="#{entityConverter}"
+				forceSelection="true" minQueryLength="2" maxResults="10">
+				<p:column>
+					#{objeto.nome}, #{objeto.modulo.nome}
+				</p:column>
+			</p:autoComplete>
 
 			<!--   F I L T R O:  N O M E   -->
 			<p:outputLabel value="Nome" for="nome" />
-			<p:inputText id="nome" label="Nome" value="#{objetoController.nome}"
-				tabindex="2"
-				title="Filtra os objetos que satisfaçam o nome informado." />
+			<p:inputText id="nome" label="Nome"
+				value="#{operacaoController.nome}" tabindex="2"
+				title="Filtra as operações que satisfaçam o nome informado." />
 
 
 			<!--   F I L T R O:   S I T U A Ç Ã O   -->
 			<p:outputLabel value="Situação" for="sit" />
-			<al:select-situacao-menu value="#{objetoController.situacao}"
-				id="sit" tabindex="3" />
+			<al:select-situacao-menu id="sit"
+				value="#{operacaoController.situacao}" tabindex="3" />
 		</p:panelGrid>
 
 	</ui:define>
@@ -73,14 +85,15 @@
 	<!--   B O T Ã O:   L I M P A R   -->
 	<ui:define name="btn-limpar">
 		<alcore:botao-limpar id="btnlimpar" tabindex="4"
-			action="#{objetoController.limpar()}" process="@this" update="@form" />
+			action="#{operacaoController.limpar()}" process="@this"
+			update="@form" />
 	</ui:define>
 
 	<!--   B O T Ã O:   P E S Q U I S A R   -->
 	<ui:define name="btn-pesquisar">
 		<alcore:botao-pesquisar id="btnpesquisar" tabindex="3"
-			action="#{objetoController.pesquisar()}"
-			update="frm-pg-objetos @(.result) @(.msgs)" />
+			action="#{operacaoController.pesquisar()}"
+			update="frm-pg-operacoes @(.result) @(.msgs)" />
 	</ui:define>
 
 

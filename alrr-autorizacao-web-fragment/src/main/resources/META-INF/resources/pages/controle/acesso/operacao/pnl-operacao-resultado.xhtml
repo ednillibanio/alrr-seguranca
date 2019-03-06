@@ -29,30 +29,35 @@
 
 
 	<!--   R E S U L T A D O   D A   P E S Q U I S A   -->
-	<al:datatable-resultado-pesquisa id="dt-perfils"
-		controller="#{perfilController}" filename="perfils"
-		dataTableRendered="#{perfilController.entities.size()>0}" tabindex="5">
+	<al:datatable-resultado-pesquisa id="dt-operacoes"
+		controller="#{operacaoController}" filename="operacoes"
+		dataTableRendered="#{operacaoController.entities.size()>0}"
+		tabindex="5">
 
 
 		<!--  N O M E  -->
-		<p:column id="nome" sortBy="#{var.nome}" headerText="perfil"
+		<p:column id="nome" sortBy="#{var.nome}" headerText="Operacao"
 			width="30%">
 			<h:outputText value="#{var.nome}" />
 		</p:column> -->
 
-		<!--  G R U P O  -->
-		<p:column id="modulo" sortBy="#{var.grupoPerfil.nome}" headerText="Grupo"
+		<!--  O B J E T O  -->
+		<p:column id="objeto" sortBy="#{var.objeto.nome}" headerText="Objeto"
 			width="20%">
-			<h:outputText value="#{var.grupoPerfil.nome}" />
+			<h:outputText value="#{var.objeto.nome}" />
 		</p:column>
 
-		<!--  D E S C R I Ç Ã O  -->
-		<p:column id="desc" headerText="Descrição" width="40%">
-			<h:outputText value="#{var.descricao}" />
+		<p:column id="modulo" sortBy="#{var.objeto.modulo.nome}"
+			headerText="Módulo" width="20%">
+			<h:outputText value="#{var.objeto.modulo.nome}" />
 		</p:column>
+
+		<!-- ************************ -->
+		<!-- INCLUIR O CAMPO MODULO DO OBJETO -->
 
 		<!--  S I T U A Ç Ã O  -->
-		<p:column id="sit" sortBy="#{var.situacao}" headerText="Situação">
+		<p:column id="sit" sortBy="#{var.situacao}" headerText="Situação"
+			width="10%">
 			<h:outputText value="#{var.situacao.label}" />
 		</p:column>
 
@@ -63,24 +68,24 @@
 				beforeShow="return true;">
 
 				<!-- *********   M E N U   D E T A L H E S   ********* -->
-				<alcore:menuitem-detalhes update="frm-perfil-detalhes"
-					action="#{perfilController.detalhes()}" />
+				<alcore:menuitem-detalhes update="frm-operacao-detalhes"
+					action="#{operacaoController.detalhes()}" />
 
 				<!-- *********   M E N U   E D I T A R   ********* -->
-				<alcore:menuitem-editar update="frm-perfil"
-					action="#{perfilController.editar()}" process="@this" />
+				<alcore:menuitem-editar update="frm-operacao"
+					action="#{operacaoController.editar()}" process="@this" />
 
 
 				<!-- *********   M E N U   D E S A T I V A R   ********* -->
 				<alcore:menuitem-desativar update="@(.result)"
-					rendered="#{perfilController.entity.situacao eq 'ATIVO' }"
-					action="#{perfilController.desativar()}" process="@this" />
+					rendered="#{operacaoController.entity.situacao eq 'ATIVO' }"
+					action="#{operacaoController.desativar()}" process="@this" />
 
 
 				<!-- *********   M E N U   A T I V A R   ********* -->
 				<alcore:menuitem-ativar update="@(.result)"
-					rendered="#{perfilController.entity.situacao eq 'INATIVO' }"
-					action="#{perfilController.ativar()}" process="@this" />
+					rendered="#{operacaoController.entity.situacao eq 'INATIVO' }"
+					action="#{operacaoController.ativar()}" process="@this" />
 
 			</p:contextMenu>
 

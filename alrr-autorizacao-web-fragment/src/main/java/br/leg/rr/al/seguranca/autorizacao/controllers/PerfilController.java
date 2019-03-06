@@ -21,31 +21,32 @@ import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.utils.StringHelper;
 import br.leg.rr.al.core.web.controller.status.DialogControllerEntityStatus;
 import br.leg.rr.al.core.web.util.FacesMessageUtils;
-import br.leg.rr.al.seguranca.autorizacao.ejb.ModuloLocal;
+import br.leg.rr.al.seguranca.autorizacao.ejb.GrupoPerfilLocal;
 import br.leg.rr.al.seguranca.autorizacao.ejb.ObjetoLocal;
-import br.leg.rr.al.seguranca.autorizacao.jpa.Modulo;
-import br.leg.rr.al.seguranca.autorizacao.jpa.Objeto;
+import br.leg.rr.al.seguranca.autorizacao.ejb.PerfilLocal;
+import br.leg.rr.al.seguranca.autorizacao.jpa.GrupoPerfil;
+import br.leg.rr.al.seguranca.autorizacao.jpa.Perfil;
 
 @Named
 @ViewScoped
-public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integer> {
+public class PerfilController extends DialogControllerEntityStatus<Perfil, Integer> {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7882112613545512515L;
+	private static final long serialVersionUID = -8313659000882011005L;
 
-	Logger logger = LoggerFactory.getLogger(ObjetoController.class);
-
-	@EJB
-	private ObjetoLocal bean;
+	Logger logger = LoggerFactory.getLogger(PerfilController.class);
 
 	@EJB
-	private ModuloLocal moduloBean;
+	private PerfilLocal bean;
 
-	private List<Modulo> modulosAtivos;
+	@EJB
+	private GrupoPerfilLocal grupoBean;
 
-	private List<Modulo> modulos;
+	private List<GrupoPerfil> gruposAtivos;
+
+	private List<GrupoPerfil> grupos;
 
 	// ************ FILTROS DE PESQUISA ************//
 	/**
@@ -53,7 +54,7 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 	 */
 	private String nome;
 
-	private List<Modulo> modulosSelecionados;
+	private List<GrupoPerfil> gruposSelecionados;
 
 	private StatusType situacao;
 	// ********************************************//
@@ -61,11 +62,11 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 	@PostConstruct
 	public void init() {
 		setBean(bean);
-		carregarModulos();
+		carregarGrupos();
 		jaExisteMsg = "objeto já existe.";
-		setNovoDialogName("dlg-objeto");
-		setEditarDialogName("dlg-objeto");
-		setDetalhesDialogName("dlg-objeto-detalhes");
+		setNovoDialogName("dlg-perfil");
+		setEditarDialogName("dlg-perfil");
+		setDetalhesDialogName("dlg-perfil-detalhes");
 	}
 
 	@Override
@@ -73,18 +74,18 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 
 		try {
 			utx.begin();
-			Objeto obj = getEntity();
+			Perfil perfil = getEntity();
 
-			if (obj != null && obj.getId() != null) {
+			if (perfil != null && perfil.getId() != null) {
 
-				obj = getBean().buscar(obj.getId());
+				perfil = getBean().buscar(perfil.getId());
 
 				// fetch´s Modulo
-				if (obj.getModulo() != null) {
-					obj.getModulo().getId();
+				if (perfil.getGrupoPerfil() != null) {
+					perfil.getGrupoPerfil().getId();
 				}
 
-				setEntity(obj);
+				setEntity(perfil);
 
 			}
 		} catch (NotSupportedException | SystemException e) {
@@ -109,7 +110,7 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 	protected void posEditar() {
 
 		super.posEditar();
-		modulosAtivos = moduloBean.getAtivos(getEntity().getModulo());
+		setGruposAtivos(grupoBean.getAtivos(getEntity().getGrupoPerfil()));
 	}
 
 	@Override
@@ -119,7 +120,7 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 		filtros.put(ObjetoLocal.PESQUISAR_PARAM_NOME, nome);
 		filtros.put(ObjetoLocal.PESQUISAR_PARAM_SITUACAO, situacao);
 		filtros.put(ObjetoLocal.PESQUISAR_PARAM_FETCH_MODULO, true);
-		filtros.put(ObjetoLocal.PESQUISAR_PARAM_MODULOS, modulosSelecionados);
+		filtros.put(ObjetoLocal.PESQUISAR_PARAM_MODULOS, getGruposSelecionados());
 
 		setFiltros(filtros);
 	}
@@ -127,20 +128,20 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 	/**
 	 * Carrega apenas os módulos ativos
 	 */
-	public void carregarModulosAtivos() {
-		modulosAtivos = moduloBean.getAtivos();
+	public void carregarGruposAtivos() {
+		setGruposAtivos(grupoBean.getAtivos());
 	}
 
 	/**
 	 * Carrega todos os módulos.
 	 */
-	public void carregarModulos() {
-		setModulos(moduloBean.buscarTodos());
+	public void carregarGrupos() {
+		setGrupos(grupoBean.buscarTodos());
 	}
 
 	@Override
 	public String novo() {
-		carregarModulosAtivos();
+		carregarGruposAtivos();
 		return super.novo();
 	}
 
@@ -174,28 +175,28 @@ public class ObjetoController extends DialogControllerEntityStatus<Objeto, Integ
 		this.situacao = situacao;
 	}
 
-	public List<Modulo> getModulosSelecionados() {
-		return modulosSelecionados;
+	public List<GrupoPerfil> getGruposAtivos() {
+		return gruposAtivos;
 	}
 
-	public void setModulosSelecionados(List<Modulo> modulosSelecionados) {
-		this.modulosSelecionados = modulosSelecionados;
+	public void setGruposAtivos(List<GrupoPerfil> gruposAtivos) {
+		this.gruposAtivos = gruposAtivos;
 	}
 
-	public List<Modulo> getModulosAtivos() {
-		return modulosAtivos;
+	public List<GrupoPerfil> getGrupos() {
+		return grupos;
 	}
 
-	public void setModulosAtivos(List<Modulo> modulosAtivos) {
-		this.modulosAtivos = modulosAtivos;
+	public void setGrupos(List<GrupoPerfil> grupos) {
+		this.grupos = grupos;
 	}
 
-	public List<Modulo> getModulos() {
-		return modulos;
+	public List<GrupoPerfil> getGruposSelecionados() {
+		return gruposSelecionados;
 	}
 
-	public void setModulos(List<Modulo> modulos) {
-		this.modulos = modulos;
+	public void setGruposSelecionados(List<GrupoPerfil> gruposSelecionados) {
+		this.gruposSelecionados = gruposSelecionados;
 	}
 
 }
