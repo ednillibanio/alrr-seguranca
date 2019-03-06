@@ -2,6 +2,7 @@ package br.leg.rr.al.seguranca.autorizacao.jpa;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,10 +23,10 @@ public class Modulo extends DominioIndexado {
 	 */
 	private static final long serialVersionUID = 7826110709692328396L;
 
-	@Column(nullable=true, length=250)
+	@Column(nullable = true, length = 250)
 	private String descricao;
-	
-	@OneToMany(mappedBy = "modulo", fetch = FetchType.LAZY, orphanRemoval = true)
+
+	@OneToMany(mappedBy = "modulo", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<Objeto> objetos;
 
 	public Set<Objeto> getObjetos() {
