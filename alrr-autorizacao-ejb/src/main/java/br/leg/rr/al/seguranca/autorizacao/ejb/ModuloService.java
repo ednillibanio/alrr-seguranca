@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.leg.rr.al.core.dao.BaseDominioIndexadoJPADao;
+import br.leg.rr.al.core.dao.BeanException;
 import br.leg.rr.al.core.jpa.BaseEntityStatus_;
 import br.leg.rr.al.seguranca.autorizacao.jpa.Modulo;
 import br.leg.rr.al.seguranca.autorizacao.jpa.Modulo_;
@@ -28,9 +30,10 @@ public class ModuloService extends BaseDominioIndexadoJPADao<Modulo> implements 
 	public Boolean jaExiste(Modulo entidade) {
 
 		CriteriaBuilder cb = getCriteriaBuilder();
-		CriteriaQuery<Modulo> cq = createCriteriaQuery();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Modulo> root = cq.from(Modulo.class);
-		cq.select(root);
+		cq.select(cb.count(root));
+		
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		Predicate cond = cb.equal(cb.lower(root.get(Modulo_.nome)), entidade.getNome().toLowerCase());
@@ -43,8 +46,13 @@ public class ModuloService extends BaseDominioIndexadoJPADao<Modulo> implements 
 		}
 
 		cq.where(predicates.toArray(new Predicate[predicates.size()]));
+		TypedQuery<Long> q = getEntityManager().createQuery(cq);
 
-		return (!getResultList(cq).isEmpty());
+		if (q.getSingleResult() > 0) {
+			throw new BeanException("Modulo com este Nome já existe. Informe outro valor.");
+		}
+
+		return false;
 	}
 
 }

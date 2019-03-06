@@ -1,4 +1,4 @@
-package br.leg.rr.al.seguranca.ejb;
+package br.leg.rr.al.seguranca.autorizacao.ejb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,27 +7,29 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import br.leg.rr.al.core.dao.BaseDominioJPADao;
+import br.leg.rr.al.core.dao.BaseDominioIndexadoJPADao;
 import br.leg.rr.al.core.dao.BeanException;
 import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.jpa.BaseEntity_;
+import br.leg.rr.al.core.jpa.DominioIndexado_;
 import br.leg.rr.al.core.jpa.Dominio_;
-import br.leg.rr.al.seguranca.domain.UsuarioType;
-import br.leg.rr.al.seguranca.jpa.GrupoPerfil;
-import br.leg.rr.al.seguranca.jpa.Perfil;
-import br.leg.rr.al.seguranca.jpa.Perfil_;
+import br.leg.rr.al.seguranca.autorizacao.jpa.GrupoPerfil;
+import br.leg.rr.al.seguranca.autorizacao.jpa.Perfil;
+import br.leg.rr.al.seguranca.autorizacao.jpa.Perfil_;
 
 @Stateless
 @Named
-public class PerfilService extends BaseDominioJPADao<Perfil> implements PerfilLocal {
+public class PerfilService extends BaseDominioIndexadoJPADao<Perfil> implements PerfilLocal {
 
 	private static final long serialVersionUID = -9162032858310691064L;
 
@@ -38,20 +40,6 @@ public class PerfilService extends BaseDominioJPADao<Perfil> implements PerfilLo
 
 		params.put(PESQUISAR_PARAM_SITUACAO, StatusType.ATIVO);
 		params.put(PESQUISAR_PARAM_GRUPO_PERFIL, grupo);
-
-		return pesquisar(params);
-
-	}
-
-	@Override
-	public List<Perfil> getAtivos(UsuarioType grupoUsuarios) {
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		List<UsuarioType> gruposUsuarios = new ArrayList<>();
-
-		gruposUsuarios.add(grupoUsuarios);
-		params.put(PESQUISAR_PARAM_SITUACAO, StatusType.ATIVO);
-		params.put(PESQUISAR_PARAM_TIPOS_USUARIO, gruposUsuarios);
 
 		return pesquisar(params);
 
@@ -72,56 +60,43 @@ public class PerfilService extends BaseDominioJPADao<Perfil> implements PerfilLo
 	}
 
 	@Override
-	public List<Perfil> getAtivosPorNome(UsuarioType grupoUsuarios, String nome) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		List<UsuarioType> gruposUsuarios = new ArrayList<>();
-
-		gruposUsuarios.add(grupoUsuarios);
-		params.put(PESQUISAR_PARAM_SITUACAO, StatusType.ATIVO);
-		params.put(PESQUISAR_PARAM_TIPOS_USUARIO, gruposUsuarios);
-		params.put(PESQUISAR_PARAM_NOME, nome);
-
-		return pesquisar(params);
-	}
-
-	@Override
-	public void trocarSituacao(Perfil entity) throws BeanException {
-
-		renovar(entity);
-		if (entity.getSituacao() == StatusType.ATIVO) {
-			entity.setSituacao(StatusType.INATIVO);
-		} else {
-			entity.setSituacao(StatusType.ATIVO);
-		}
-		salvar(entity);
-	}
-
-	@Override
 	public Boolean jaExiste(Perfil entidade) {
 
 		CriteriaBuilder cb = getCriteriaBuilder();
-		CriteriaQuery<Perfil> cq = createCriteriaQuery();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Perfil> root = cq.from(Perfil.class);
-		cq.select(root);
+		cq.select(cb.count(root));
+		
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
-		Predicate cond = cb.equal(cb.lower(root.get(Dominio_.nome)), entidade.getNome().toLowerCase());
+		Predicate cond = cb.equal(cb.lower(root.get(DominioIndexado_.nome)), entidade.getNome().toLowerCase());
 		predicates.add(cond);
 
-		Predicate cond1 = cb.equal(root.get(Perfil_.grupoPerfil), entidade.getGrupoPerfil());
-		predicates.add(cond1);
-
-		Predicate cond2 = cb.equal(root.get(Perfil_.tipoUsuario), entidade.getTipoUsuario());
-		predicates.add(cond2);
-
-		if (entidade.getId() != null && entidade.getId().intValue() > 0) {
-			Predicate cond3 = cb.notEqual(root.get(BaseEntity_.id), entidade.getId());
-			predicates.add(cond3);
+		if (entidade.getGrupoPerfil() != null) {
+			cond = cb.equal(root.get(Perfil_.grupoPerfil), entidade.getGrupoPerfil());
+			predicates.add(cond);
+		} else {
+			cond = root.get(Perfil_.grupoPerfil).isNull();
+			predicates.add(cond);
 		}
 
-		cq.where(cb.and(predicates.toArray(new Predicate[] {})));
+		if (entidade.getId() != null && entidade.getId().intValue() > 0) {
+			cond = cb.notEqual(root.get(BaseEntity_.id), entidade.getId());
+			predicates.add(cond);
+		}
 
-		return (!getResultList(cq).isEmpty());
+		cq.where(predicates.toArray(new Predicate[] {}));
+		TypedQuery<Long> q = getEntityManager().createQuery(cq);
+
+		if (q.getSingleResult() > 0) {
+			if (entidade.getGrupoPerfil()!= null) {
+				throw new BeanException("Perfil com este Nome e Grupo já existe. Informe outro valor.");
+			} else {
+				throw new BeanException("Perfil com este Nome já existe. Informe outro valor.");
+			}
+		}
+
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,14 +106,13 @@ public class PerfilService extends BaseDominioJPADao<Perfil> implements PerfilLo
 		String nome = null;
 		StatusType situacao = null;
 		List<GrupoPerfil> grupos = null;
-		List<UsuarioType> gruposUsuario = null;
 
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		CriteriaBuilder cb = getCriteriaBuilder();
 		CriteriaQuery<Perfil> cq = getCriteriaBuilder().createQuery(entityClass);
 		Root<Perfil> root = cq.from(entityClass);
-		root.fetch(Perfil_.grupoPerfil);
+		root.fetch(Perfil_.grupoPerfil, JoinType.LEFT);
 		cq.select(root);
 
 		if (params.size() > 0) {
@@ -158,15 +132,6 @@ public class PerfilService extends BaseDominioJPADao<Perfil> implements PerfilLo
 					Predicate cond = exp.in(grupos);
 					predicates.add(cond);
 
-				}
-			}
-
-			if (params.containsKey(PESQUISAR_PARAM_TIPOS_USUARIO)) {
-				gruposUsuario = (List<UsuarioType>) params.get(PESQUISAR_PARAM_TIPOS_USUARIO);
-				if (gruposUsuario != null && gruposUsuario.size() > 0) {
-					Expression<UsuarioType> exp = root.get(Perfil_.tipoUsuario);
-					Predicate cond = exp.in(gruposUsuario);
-					predicates.add(cond);
 				}
 			}
 

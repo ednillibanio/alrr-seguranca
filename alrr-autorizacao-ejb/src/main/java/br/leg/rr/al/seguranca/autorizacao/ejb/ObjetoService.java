@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
@@ -20,6 +21,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import br.leg.rr.al.core.dao.BaseDominioJPADao;
+import br.leg.rr.al.core.dao.BeanException;
 import br.leg.rr.al.core.domain.StatusType;
 import br.leg.rr.al.core.jpa.BaseEntityStatus_;
 import br.leg.rr.al.core.jpa.Dominio_;
@@ -47,6 +49,7 @@ public class ObjetoService extends BaseDominioJPADao<Objeto> implements ObjetoLo
 		Root<Objeto> root = cq.from(Objeto.class);
 		cq.select(root);
 		List<Predicate> predicates = new ArrayList<Predicate>();
+		root.fetch(Objeto_.modulo, JoinType.INNER);
 
 		if (modulo != null) {
 			Predicate cond = cb.equal(root.get(Objeto_.modulo), modulo);
@@ -63,12 +66,36 @@ public class ObjetoService extends BaseDominioJPADao<Objeto> implements ObjetoLo
 	}
 
 	@Override
+	public List<Objeto> buscarAtivosPorNome(String nome) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put(PESQUISAR_PARAM_NOME, nome);
+		params.put(PESQUISAR_PARAM_SITUACAO, StatusType.ATIVO);
+		params.put(PESQUISAR_PARAM_FETCH_MODULO, true);
+		return pesquisar(params);
+
+	}
+
+	@Override
+	public List<Objeto> buscarPorNome(String nome) {
+
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put(PESQUISAR_PARAM_NOME, nome);
+		params.put(PESQUISAR_PARAM_FETCH_MODULO, true);
+		return pesquisar(params);
+
+	}
+
+	@Override
 	public Boolean jaExiste(Objeto entidade) {
 
 		CriteriaBuilder cb = getCriteriaBuilder();
-		CriteriaQuery<Objeto> cq = createCriteriaQuery();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Objeto> root = cq.from(Objeto.class);
-		cq.select(root);
+		cq.select(cb.count(root));
+
 		List<Predicate> predicates = new ArrayList<Predicate>();
 
 		Predicate cond = cb.equal(cb.lower(root.get(Objeto_.nome)), entidade.getNome().toLowerCase());
@@ -84,8 +111,13 @@ public class ObjetoService extends BaseDominioJPADao<Objeto> implements ObjetoLo
 		}
 
 		cq.where(predicates.toArray(new Predicate[predicates.size()]));
+		TypedQuery<Long> q = getEntityManager().createQuery(cq);
 
-		return (!getResultList(cq).isEmpty());
+		if (q.getSingleResult() > 0) {
+			throw new BeanException("Objeto com este Nome e Módulo já existe. Informe outro valor.");
+		}
+
+		return false;
 
 	}
 
@@ -93,6 +125,7 @@ public class ObjetoService extends BaseDominioJPADao<Objeto> implements ObjetoLo
 	public List<Objeto> getAtivos(Boolean fetchModulo) {
 		Map<String, Object> params = new HashMap<String, Object>();
 
+		params.put(PESQUISAR_PARAM_SITUACAO, StatusType.ATIVO);
 		params.put(PESQUISAR_PARAM_FETCH_MODULO, fetchModulo);
 		return pesquisar(params);
 

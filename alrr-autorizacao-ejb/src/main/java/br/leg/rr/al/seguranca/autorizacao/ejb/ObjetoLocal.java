@@ -14,8 +14,7 @@ import br.leg.rr.al.seguranca.autorizacao.jpa.Objeto;
 public interface ObjetoLocal extends DominioJPADao<Objeto> {
 
 	/**
-	 * Indica se deve carregar as permissões associada ao {@code Objeto}.
-	 * <br>
+	 * Indica se deve carregar as permissões associada ao {@code Objeto}. <br>
 	 * 
 	 * @value {@literal Boolean}. Se {@code true}, carrega permissoes;
 	 * 
@@ -27,9 +26,8 @@ public interface ObjetoLocal extends DominioJPADao<Objeto> {
 	 * 
 	 * @value {@literal List<Modulo>};
 	 */
-	String PESQUISAR_PARAM_MODULOS = "modulos";
-	
-	
+	public static final String PESQUISAR_PARAM_MODULOS = "modulos";
+
 	/**
 	 * Indica se deve carregar a entidade {@code Modulo} associada ao
 	 * {@code Objeto}. <br>
@@ -39,13 +37,13 @@ public interface ObjetoLocal extends DominioJPADao<Objeto> {
 	 */
 	public static final String PESQUISAR_PARAM_FETCH_MODULO = "fetchModulo";
 
-	
-	
 	/**
+	 * Método que busca os objetos pelo módulo. Neste caso, é feito fetch do módulo.
 	 * 
-	 * @param modulo
-	 * @param situacao
-	 * @return
+	 * @param modulo   filtro usado para buscar os objetos desse modulo
+	 * @param situacao filtro de situacao dos objetos
+	 * @return lista de objetos que satisfazem os valores dos parâmetros modulo e
+	 *         situacao.
 	 */
 	public List<Objeto> buscarPorModulo(@NotNull(message = "Param modulo não pode ser nulo.") Modulo modulo,
 			StatusType situacao);
